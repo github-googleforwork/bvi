@@ -1,0 +1,9 @@
+SELECT
+  B__business_function,
+  AVG(AK_how_many_hours_do_you_save_or_expect_to_save_per_week_using_g_suite) avg_hours_saved,
+  AVG(AB_degree_has_your_productivity_increased_or_decreased_when_using_g_suite) avg_productivity,
+  AVG(AC_degree_has_your_collaboration_with_colleagues_on_work_increased_or_decreased_when_using_g_suite) avg_collaboration
+FROM
+  [YOUR_PROJECT_ID:survey.form_responses]
+GROUP BY
+  B__business_function

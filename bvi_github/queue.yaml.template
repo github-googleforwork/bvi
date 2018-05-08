@@ -1,0 +1,173 @@
+queue:
+- name: metricsqs
+  rate: 6/m
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel1
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel2
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel3
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel4
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel5
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: bqUpdateByLevel6
+  rate: 1/s
+  bucket_size: 2
+  max_concurrent_requests: 2
+- name: metricsq1
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 3
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: metricsq2
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 3
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: metricsq3
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 3
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: userq1
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: userq2
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: userq3
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: activityq1
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: activityq2
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: activityq3
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: activityq4
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: activityq5
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: usageq1
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: usageq2
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: usageq3
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: usageq4
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: usageq5
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: volumeReportQ
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 5
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200
+- name: sendFailureEmailQ
+  rate: 1/s
+  bucket_size: 5
+  retry_parameters:
+    task_retry_limit: 2
+    task_age_limit: 4h
+    min_backoff_seconds: 100
+    max_backoff_seconds: 200

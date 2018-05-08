@@ -1,0 +1,38 @@
+version: version-3-mv01
+
+task_management:
+  max_pages: MAX_NUMBER_PAGES_Recommended_200
+  page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_500
+
+queues:
+  user: userq
+  volume_report: volumeReportQ
+  failure_email: sendFailureEmailQ
+
+credentials:
+  general: credential/NAME_OF_CREDENTIALS_FILE.json
+  bigquery: credential/NAME_OF_BIGQUERY_CREDENTIALS_FILE.json
+
+ids:
+  project_id: YOUR_PROJECT_ID
+  dataset_id: raw_data
+
+super_admin:
+  delegated: YOUR_EMAIL
+
+domains: YOUR_DOMAINS_SEPARATED_BY_SEMICOLON
+
+plan: Enterprise
+
+google_sheets_link: GOOGLE_SHEETS_LINK
+
+custom_fields_sheets_link: CUSTOM_FIELDS_SHEETS_LINK
+
+notification_email: NOTIFICATION_EMAIL
+
+scopes:
+  admin_directory:
+    - https://www.googleapis.com/auth/admin.directory.user.readonly
+  big_query:
+    - https://www.googleapis.com/auth/bigquery
+    - https://www.googleapis.com/auth/drive.readonly

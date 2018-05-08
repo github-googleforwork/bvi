@@ -1,0 +1,67 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /bq_api
+  script: bigquery_api.application
+
+- url: /user
+  script: user.application
+
+- url: /customer
+  script: customer.application
+
+- url: /user_usage
+  script: user_usage.application
+
+- url: /activities
+  script: activities.application
+
+- url: /historical_data
+  script: historical_data.application
+ 
+- url: /historical_update
+  script: historical_update.application
+
+- url: /user_extended
+  script: user_extended.application
+  
+- url: /one_page_user_list
+  script: one_page_user_list.application
+
+- url: /one_page_user_usage
+  script: one_page_user_usage.application
+
+- url: /activities_app
+  script: activities_app.application
+
+- url: /one_page_user_activities
+  script: one_page_user_activities.application
+
+- url: /user_delay
+  script: user_delay.application
+
+- url: /volume_report
+  script: volume_report.application
+
+- url: /create_volume_report
+  script: create_volume_report.application
+
+- url: /check_failure
+  script: check_failure.application
+
+- url: /send_failure_email
+  script: send_failure_email.application
+
+- url: /
+  script: main.application
+
+- url: /images
+  static_dir: images
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: latest

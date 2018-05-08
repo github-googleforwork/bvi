@@ -1,0 +1,192 @@
+[
+      {
+        "mode": "NULLABLE",
+        "name": "timestamp",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "business_function",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "location",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_drive",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_docs",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_slides",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_sheets",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_hangouts_chat",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_hangouts_video",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_sites",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_forms",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_often_do_you_use_the_following_tools_google_plus",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_drive",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_docs",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_slides",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_sheets",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_hangouts_chat",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_hangouts_video",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_sites",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_forms",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_well_would_you_rate_your_ability_to_use_the_following_products_google_plus",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_helpful_did_or_do_you_find_the_following_training_resources_In_class_training",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_helpful_did_or_do_you_find_the_following_training_resources_online_training",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_helpful_did_or_do_you_find_the_following_training_resources_going_google_site",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_helpful_did_or_do_you_find_the_following_training_resources_peer_support_google_guides",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_helpful_did_or_do_you_find_the_following_training_resources_other",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "if_you_selected_other_please_specify_the_method_of_training",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_has_your_productivity_increased_or_decreased_when_using_g_suite",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_has_your_collaboration_with_colleagues_on_work_increased_or_decreased_when_using_g_suite",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_has_your_ability_to_connect_with_colleagues_outside_of_your_primary_location_changed_since_using_google_apps_DEPRECATED",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_have_you_increased_or_decreased_your_usage_of_mobile_devices_e_g_mobile_phones_tablets_DEPRECATED",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_have_you_been_able_to_work_more_or_less_outside_of_your_primary_work_location_since_using_google_apps_DEPRECATED",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_do_you_agree_or_disagree_as_a_result_of_using_g_suite_i_am_more_flexible_in_where_i_can_work_and_or_what_device_i_use",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_do_you_agree_or_disagree_to_the_as_a_result_of_using_g_suite_my_organization_is_more_innovative",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "degree_do_you_agree_or_disagree_as_a_result_of_using_google_apps_my_organization_is_more_innovative_DEPRECATED",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "if_you_scored_any_of_the_above_statements_with_negative_numbers_or_disagree_please_comment_below_to_provide_more_context",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "how_many_hours_do_you_save_or_expect_to_save_per_week_using_g_suite",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "please_provide_any_examples_of_how_google_has_positively_impacted_your_work",
+        "type": "STRING"
+      }
+]

@@ -1,0 +1,9 @@
+-- active_users_30da
+-- Review: 16/06/2017
+SELECT
+  DATE(YOUR_TIMESTAMP_PARAMETER) as date,
+  EXACT_COUNT_DISTINCT(email) as count
+FROM
+  [YOUR_PROJECT_ID:users.active_users]
+WHERE
+  _PARTITIONTIME > DATE_ADD(YOUR_TIMESTAMP_PARAMETER,-30,"DAY")

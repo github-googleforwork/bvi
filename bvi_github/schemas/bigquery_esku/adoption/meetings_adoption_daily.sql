@@ -1,0 +1,63 @@
+-- meetings_adoption_daily
+-- Review: 2018-03-19
+
+SELECT
+  date,
+  meet.average_meeting_minutes AS average_meeting_minutes,
+  meet.average_meeting_minutes_with_11_to_15_calls AS average_meeting_minutes_with_11_to_15_calls,
+  meet.average_meeting_minutes_with_16_to_25_calls AS average_meeting_minutes_with_16_to_25_calls,
+  meet.average_meeting_minutes_with_26_to_50_calls AS average_meeting_minutes_with_26_to_50_calls,
+  meet.average_meeting_minutes_with_2_calls AS average_meeting_minutes_with_2_calls,
+  meet.average_meeting_minutes_with_3_to_5_calls AS average_meeting_minutes_with_3_to_5_calls,
+  meet.average_meeting_minutes_with_6_to_10_calls AS average_meeting_minutes_with_6_to_10_calls,
+  meet.lonely_meetings AS lonely_meetings,
+  meet.max_concurrent_usage_chromebase AS max_concurrent_usage_chromebase,
+  meet.max_concurrent_usage_chromebox AS max_concurrent_usage_chromebox,
+  meet.num_1day_active_users AS num_1day_active_users,
+  meet.num_30day_active_users AS num_30day_active_users,
+  meet.num_7day_active_users AS num_7day_active_users,
+  meet.num_calls AS num_calls,
+  meet.num_calls_android AS num_calls_android,
+  meet.num_calls_by_external_users AS num_calls_by_external_users,
+  meet.num_calls_by_internal_users AS num_calls_by_internal_users,
+  meet.num_calls_by_pstn_in_users AS num_calls_by_pstn_in_users,
+  meet.num_calls_chromebase AS num_calls_chromebase,
+  meet.num_calls_chromebox AS num_calls_chromebox,
+  meet.num_calls_ios AS num_calls_ios,
+  meet.num_calls_jamboard AS num_calls_jamboard,
+  meet.num_calls_unknown_client AS num_calls_unknown_client,
+  meet.num_calls_web AS num_calls_web,
+  meet.num_meetings AS num_meetings,
+  meet.num_meetings_android AS num_meetings_android,
+  meet.num_meetings_chromebase AS num_meetings_chromebase,
+  meet.num_meetings_chromebox AS num_meetings_chromebox,
+  meet.num_meetings_ios AS num_meetings_ios,
+  meet.num_meetings_jamboard AS num_meetings_jamboard,
+  meet.num_meetings_unknown_client AS num_meetings_unknown_client,
+  meet.num_meetings_web AS num_meetings_web,
+  meet.num_meetings_with_11_to_15_calls AS num_meetings_with_11_to_15_calls,
+  meet.num_meetings_with_16_to_25_calls AS num_meetings_with_16_to_25_calls,
+  meet.num_meetings_with_26_to_50_calls AS num_meetings_with_26_to_50_calls,
+  meet.num_meetings_with_2_calls AS num_meetings_with_2_calls,
+  meet.num_meetings_with_3_to_5_calls AS num_meetings_with_3_to_5_calls,
+  meet.num_meetings_with_6_to_10_calls AS num_meetings_with_6_to_10_calls,
+  meet.num_meetings_with_external_users AS num_meetings_with_external_users,
+  meet.num_meetings_with_pstn_in_users AS num_meetings_with_pstn_in_users,
+  meet.total_call_minutes AS total_call_minutes,
+  meet.total_call_minutes_android AS total_call_minutes_android,
+  meet.total_call_minutes_by_external_users AS total_call_minutes_by_external_users,
+  meet.total_call_minutes_by_internal_users AS total_call_minutes_by_internal_users,
+  meet.total_call_minutes_by_pstn_in_users AS total_call_minutes_by_pstn_in_users,
+  meet.total_call_minutes_chromebase AS total_call_minutes_chromebase,
+  meet.total_call_minutes_chromebox AS total_call_minutes_chromebox,
+  meet.total_call_minutes_ios AS total_call_minutes_ios,
+  meet.total_call_minutes_jamboard AS total_call_minutes_jamboard,
+  meet.total_call_minutes_unknown_client AS total_call_minutes_unknown_client,
+  meet.total_call_minutes_web AS total_call_minutes_web,
+  meet.total_meeting_minutes AS total_meeting_minutes
+FROM
+  [YOUR_PROJECT_ID:Reports.usage]
+WHERE
+  TRUE
+  AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
+  AND record_type = 'customer'
