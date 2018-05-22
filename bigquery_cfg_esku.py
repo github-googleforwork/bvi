@@ -43,6 +43,10 @@ setup['datasets'] = [
     {
         'name': 'custom',
         'description': 'Custom fields data',
+    },
+    {
+        'name': 'billing',
+        'description': 'Billing data',
     }
 ]
 

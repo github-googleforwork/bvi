@@ -56,6 +56,7 @@ with open("config.yaml", 'r') as ymlfile:
 
 from bigquery_survey_cfg import setup as bigquery_survey_setup
 from bigquery_logs_cfg import setup as bigquery_logs_setup
+from bigquery_billing_cfg import setup as bigquery_billing_setup
 if (cfg['plan'] == 'Enterprise'):
     from bigquery_cfg_esku import setup as bigquery_setup
 else:
@@ -707,6 +708,10 @@ class PrintBigQuery(webapp2.RequestHandler):
             create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_logs_setup['folder'],
                                     tables_list=bigquery_logs_setup['tables'], op=op)
 
+        elif op == "create_billing_view":
+            create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_logs_setup['folder'],
+                                    tables_list=bigquery_billing_setup['tables'], op=op)
+
         elif op == "update":
             update_data_level(self, bigquery, 'update', bigquery_setup)
         elif op == "custom_update":
@@ -722,6 +727,7 @@ class PrintBigQuery(webapp2.RequestHandler):
                                                                            op="create_survey_tables"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_custom_schemas"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_logs_tables"),
+                "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_billing_view"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="update"),
             ]
 
