@@ -193,6 +193,16 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
+        'name': 'gplus_adoption_daily',
+        'dataset': 'adoption',
+        'description': 'Daily gplus metrics extracted',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 1,
+        'type': 'table_from_view',
+    },
+    {
         'name': 'meetings_latest_30day_summary',
         'dataset': 'adoption',
         'description': 'Summary with many meetings metrics calculated from the past 30 days',
@@ -232,6 +242,12 @@ setup['tables'] = [
         'name': 'num_calls_latest_30day_by_device',
         'dataset': 'adoption',
         'description': 'Number of calls grouped by device type calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'gplus_adoption_daily_latest',
+        'dataset': 'adoption',
+        'description': 'gplus adoption from last calculated day',
         'type': 'view',
     },
     {
@@ -500,6 +516,26 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
+        'name': 'gplus_30day_summary',
+        'dataset': 'adoption',
+        'description': 'Summary with gplus metrics calculated from the past 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'user_usage_gplus_daily',
+        'dataset': 'adoption',
+        'description': 'gplus metrics daily usage metrics per user',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
         'name': 'latest_date_audit_log',
         'dataset': 'raw_data',
         'description': 'Available dates for audit log (from more recent to oldest)',
@@ -509,6 +545,12 @@ setup['tables'] = [
         'name': 'adoption_latest_extended',
         'dataset': 'adoption',
         'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'gplus_30day_summary_latest',
+        'dataset': 'adoption',
+        'description': 'Latest summary with gplus metrics calculated from the past 30 days',
         'type': 'view',
     },
     {
@@ -571,6 +613,16 @@ setup['tables'] = [
         'name': 'total_active_users_1day',
         'dataset': 'users',
         'description': 'count of distinct active users from drive and gmail for each day',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'engagement_gplus_daily',
+        'dataset': 'adoption',
+        'description': 'Engagement of Google+ users daily',
         'timePartitioning': {
             'type': 'DAY',
         },
