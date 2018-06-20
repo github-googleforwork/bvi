@@ -1,4 +1,4 @@
--- user_usage_gplus_daily (view)
+-- user_usage_gplus_daily
 SELECT
   user_usage.date AS date,
   user_usage.email AS email,
