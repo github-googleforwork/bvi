@@ -14,7 +14,7 @@ FROM (
     [YOUR_PROJECT_ID:raw_data.latest_date_users_list_date]),
   (
   SELECT
-    date_prof,
+    date_prof as date,
     count AS audit_log
   FROM
     [YOUR_PROJECT_ID:raw_data.latest_date_audit_log]),
