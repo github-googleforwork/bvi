@@ -1,10 +1,10 @@
 -- meetings_latest_30day_summary
--- Review: 2018-03-19
+-- Review: 2018-07-10
 
 SELECT
     SUM(total_meeting_minutes) AS total_meeting_minutes,
     SUM(num_meetings) AS num_meetings,
-    ROUND(AVG(average_meeting_minutes),2) AS average_meeting_minutes,
+    ROUND(SUM(total_meeting_minutes) / SUM(num_meetings),2) AS average_meeting_minutes,
     SUM(num_calls) AS num_calls,
     ROUND(SUM(num_meetings_with_2_calls) / SUM(num_meetings),2) AS p_num_meetings_with_2_calls,
     ROUND(SUM(num_meetings_with_3_to_5_calls) / SUM(num_meetings),2) AS p_num_meetings_with_3_to_5_calls,
@@ -12,12 +12,12 @@ SELECT
     ROUND(SUM(num_meetings_with_11_to_15_calls) / SUM(num_meetings),2) AS p_num_meetings_with_11_to_15_calls,
     ROUND(SUM(num_meetings_with_16_to_25_calls) / SUM(num_meetings),2) AS p_num_meetings_with_16_to_25_calls,
     ROUND(SUM(num_meetings_with_26_to_50_calls) / SUM(num_meetings),2) AS p_num_meetings_with_26_to_50_calls,
-    ROUND(AVG(average_meeting_minutes_with_2_calls),2) AS average_meeting_minutes_with_2_calls,
-    ROUND(AVG(average_meeting_minutes_with_3_to_5_calls),2) AS average_meeting_minutes_with_3_to_5_calls,
-    ROUND(AVG(average_meeting_minutes_with_6_to_10_calls),2) AS average_meeting_minutes_with_6_to_10_calls,
-    ROUND(AVG(average_meeting_minutes_with_11_to_15_calls),2) AS average_meeting_minutes_with_11_to_15_calls,
-    ROUND(AVG(average_meeting_minutes_with_16_to_25_calls),2) AS average_meeting_minutes_with_16_to_25_calls,
-    ROUND(AVG(average_meeting_minutes_with_26_to_50_calls),2) AS average_meeting_minutes_with_26_to_50_calls,
+    ROUND(SUM(average_meeting_minutes_with_2_calls * num_meetings_with_2_calls) / SUM(num_meetings_with_2_calls),2) AS average_meeting_minutes_with_2_calls,
+    ROUND(SUM(average_meeting_minutes_with_3_to_5_calls * num_meetings_with_3_to_5_calls) / SUM(num_meetings_with_3_to_5_calls),2) AS average_meeting_minutes_with_3_to_5_calls,
+    ROUND(SUM(average_meeting_minutes_with_6_to_10_calls * num_meetings_with_6_to_10_calls) / SUM(num_meetings_with_6_to_10_calls),2) AS average_meeting_minutes_with_6_to_10_calls,
+    ROUND(SUM(average_meeting_minutes_with_11_to_15_calls * num_meetings_with_11_to_15_calls) / SUM(num_meetings_with_11_to_15_calls),2) AS average_meeting_minutes_with_11_to_15_calls,
+    ROUND(SUM(average_meeting_minutes_with_16_to_25_calls * num_meetings_with_16_to_25_calls) / SUM(num_meetings_with_16_to_25_calls),2) AS average_meeting_minutes_with_16_to_25_calls,
+    ROUND(SUM(average_meeting_minutes_with_26_to_50_calls * num_meetings_with_26_to_50_calls) / SUM(num_meetings_with_26_to_50_calls),2) AS average_meeting_minutes_with_26_to_50_calls,
     ROUND(SUM(num_calls_android) / SUM(num_calls),2) AS p_num_calls_android,
     ROUND(SUM(num_calls_ios) / SUM(num_calls),2) AS p_num_calls_ios,
     ROUND(SUM(num_calls_web) / SUM(num_calls),2) AS p_num_calls_web,
