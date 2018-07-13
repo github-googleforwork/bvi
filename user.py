@@ -23,7 +23,8 @@ import logging
 import webapp2
 import random
 import sys
-from datetime import date, timedelta, datetime
+from main import delete_table_big_query
+from datetime import date, datetime
 from google.appengine.api import taskqueue
 from bvi_logger import bvi_log
 
@@ -46,6 +47,10 @@ class PrintUsers(webapp2.RequestHandler):
         page_token = ''
         maxPages = cfg['task_management']['max_pages']
         queue_name = cfg['queues']['user'] + str(1)
+
+        decoratorDate = "".join(dDate.split("-"))
+        # delete table if it exists to avoid data duplication
+        delete_table_big_query('users_list_date${decoratorDate}'.format(decoratorDate=decoratorDate))
 
         domains = list(set(cfg['domains'].split(";")))
         for domain in domains:

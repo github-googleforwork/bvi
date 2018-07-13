@@ -103,8 +103,8 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
 
 def createBigQueryService(sScope, report1, report2):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(cfg['credentials']['bigquery'], sScope)
-    http_auth = credentials.authorize(Http())
-    bigquery_service = build(report1, report2, credentials=credentials)
+    http_auth = credentials.authorize(Http(timeout=60))
+    bigquery_service = build(report1, report2, credentials=credentials, http=http_auth)
     return bigquery_service
 
 
@@ -318,7 +318,6 @@ def returnAuditLogReport(uUser, appName, dDay, SAJson, SADelegated):
 
 def writeDatainBigQuery(dataRows, dataTable):
     bQService = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')
-    response = ''
     logging.info("Processing {len} rows, destinated to {table}".format(len=len(dataRows), table=dataTable))
     rows_list = []
     responses = []
@@ -330,6 +329,19 @@ def writeDatainBigQuery(dataRows, dataTable):
     if len(dataRows) % 500 > 0:
         responses.append(stream_row_to_bigquery(bQService, dataTable, rows_list))
     return responses
+
+
+def delete_table_big_query(table_name):
+    bigquery = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')
+    logging.info("Deleting {table}".format(table=table_name))
+    try:
+        bigquery.tables().delete(
+            projectId=cfg['ids']['project_id'],
+            datasetId=cfg['ids']['dataset_id'],
+            tableId=table_name
+        ).execute()
+    except Exception as err:
+        logging.error(err)
 
 
 # Streams Row to BigQuery
@@ -413,7 +425,6 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
     logging.info("We have {} user rows in the end".format(len(users)))
     yield users
 
-#---------------------------------------------------
 # Returns User List Token
 # Parameters:
 # dDomain = Google Apps Domain
@@ -434,6 +445,7 @@ def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
 
     # AVAILABLE FIELDS: https://developers.google.com/admin-sdk/directory/v1/reference/users#resource
     fields = 'nextPageToken'
+    tokens = []
     while True:
         try:
             if page_token == '':

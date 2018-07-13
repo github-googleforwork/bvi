@@ -1,6 +1,6 @@
 #start py file
 import os
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 SdDate = '2018-02-15'
 EdDate = '2018-02-18'
