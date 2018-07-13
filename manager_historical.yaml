@@ -1,0 +1,40 @@
+first:
+  endpoint: /historical_data?report=customer&Sdate=start_date&Edate=end_date
+  queues: metricsqs
+  next_step: user_usage
+user_usage:
+  endpoint: /historical_data?report=user&Sdate=start_date&Edate=end_date
+  queues: usageq1,usageq2,usageq3,usageq4,usageq5,metricsqs
+  next_step: activity
+activity:
+  endpoint: /historical_data?report=activities&Sdate=start_date&Edate=end_date
+  queues: activityq1,activityq2,activityq3,activityq4,activityq5,metricsqs
+  next_step: bqUpdate1
+bqUpdate1:
+  endpoint: /historical_update?Level=1&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel1
+  next_step: bqUpdate2
+bqUpdate2:
+  endpoint: /historical_update?Level=2&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel2
+  next_step: bqUpdate3
+bqUpdate3:
+  endpoint: /historical_update?Level=3&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel3
+  next_step: bqUpdate4
+bqUpdate4:
+  endpoint: /historical_update?Level=4&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel4
+  next_step: bqUpdate5
+bqUpdate5:
+  endpoint: /historical_update?Level=5&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel5
+  next_step: bqUpdate6
+bqUpdate6:
+  endpoint: /historical_update?Level=6&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel6
+  next_step: bqCustomUpdate1
+bqCustomUpdate1:
+  endpoint: /historical_update?Level=custom&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel1
+  next_step:

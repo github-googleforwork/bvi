@@ -24,6 +24,7 @@ import logging
 import webapp2
 import random
 import sys
+from main import delete_table_big_query
 from datetime import date, timedelta, datetime
 from google.appengine.api import taskqueue
 from bvi_logger import bvi_log
@@ -53,6 +54,10 @@ class PrintActivities(webapp2.RequestHandler):
                 return
 
         bvi_log(date=dateref, resource='activities', message_id='start', message='Start of /activities call')
+
+        decoratorDate = "".join(dateref.split("-"))
+        # delete table if it exists to avoid data duplication
+        delete_table_big_query('audit_log${decoratorDate}'.format(decoratorDate=decoratorDate))
 
         collection = 'admin|drive|calendar|gplus'
         collection = list(set(collection.split("|")))

@@ -1,47 +1,7 @@
 cron:
-- description: "daily job customer usage"
-  url: /customer
+- description: "run data consolidation"
+  url: /run
   schedule: every day 00:20
-  timezone: America/Denver
-- description: "daily job user list"
-  url: /user
-  schedule: every day 00:25
-  timezone: America/Denver
-- description: "daily job user usage"
-  url: /user_usage
-  schedule: every day 00:35
-  timezone: America/Denver
-- description: "daily job activities"
-  url: /activities
-  schedule: every day 01:35
-  timezone: America/Denver
-- description: "update level 1 tables"
-  url: /bq_api?op=update&level=1&dateref=from_cron
-  schedule: every day 02:35
-  timezone: America/Denver
-- description: "update level 2 tables"
-  url: /bq_api?op=update&level=2&dateref=from_cron
-  schedule: every day 02:45
-  timezone: America/Denver
-- description: "update level 3 tables"
-  url: /bq_api?op=update&level=3&dateref=from_cron
-  schedule: every day 02:55
-  timezone: America/Denver
-- description: "update level 4 tables"
-  url: /bq_api?op=update&level=4&dateref=from_cron
-  schedule: every day 03:05
-  timezone: America/Denver
-- description: "update level 5 tables"
-  url: /bq_api?op=update&level=5&dateref=from_cron
-  schedule: every day 03:15
-  timezone: America/Denver
-- description: "update level 6 tables"
-  url: /bq_api?op=update&level=6&dateref=from_cron
-  schedule: every day 03:25
-  timezone: America/Denver
-- description: "update custom tables level 1"
-  url: /bq_api?op=custom_update&level=1&dateref=from_cron
-  schedule: every day 03:35
   timezone: America/Denver
 - description: "Check and send email to admins in case of any failure"
   url: /check_failure

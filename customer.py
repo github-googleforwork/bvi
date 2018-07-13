@@ -24,8 +24,8 @@
 
 import logging
 import webapp2
-from main import returnCustomerUsageReport, writeDatainBigQuery
-from datetime import date, timedelta, datetime
+from main import returnCustomerUsageReport, writeDatainBigQuery, delete_table_big_query
+from datetime import date, timedelta
 from bvi_logger import bvi_log
 
 import yaml
@@ -39,6 +39,7 @@ class PrintCustomer(webapp2.RequestHandler):
         logging.info('Customer Usage')
 
         dateref = self.request.get('date', "from_cron")
+
         if len(dateref) > 0:
             try:
                 if dateref == "from_cron":
@@ -47,8 +48,6 @@ class PrintCustomer(webapp2.RequestHandler):
                     today_4 = today - timedelta(days=4)
                     dateref = today_4.strftime("%Y-%m-%d")
 
-                yyyy, mm, dd = dateref.split("-")
-                timestamp = datetime(int(yyyy), int(mm), int(dd))
                 dDate = dateref
             except ValueError:
                 logging.error("Wrong updating date = {dateref}".format(dateref=dateref))
@@ -59,12 +58,16 @@ class PrintCustomer(webapp2.RequestHandler):
             bvi_log(date=dDate, resource='exec', message_id='start', message='Start of BVI daily execution')
             bvi_log(date=dDate, resource='customer_usage', message_id='start', message='Start of /customer call')
 
-            decoratorDate = ("").join(dDate.split("-"))
+            decoratorDate = "".join(dDate.split("-"))
+            table_name = 'customer_usage${decoratorDate}'.format(decoratorDate=decoratorDate)
+
+            # delete table if it exists to avoid data duplication
+            delete_table_big_query(table_name)
+
             for report_items in returnCustomerUsageReport(dDate, cfg['credentials']['general'],
                                                           cfg['super_admin']['delegated']):
                 try:
-                    bq_answer = writeDatainBigQuery(report_items,
-                                                    'customer_usage${decoratorDate}'.format(decoratorDate=decoratorDate))
+                    writeDatainBigQuery(report_items, table_name)
                     logging.info('Customer Usage for ' + dDate + ' - ' + cfg['domains'] + ' / ')
                     self.response.write('Customer Usage for ' + dDate + ' - ' + cfg['domains'] + ' / ')
                 except Exception as err:

@@ -28,7 +28,7 @@ import random
 import sys
 from datetime import date, timedelta, datetime
 from google.appengine.api import taskqueue
-from main import returnUserUsageToken
+from main import returnUserUsageToken, delete_table_big_query
 from bvi_logger import bvi_log
 
 import yaml
@@ -50,8 +50,6 @@ class PrintUserUsage(webapp2.RequestHandler):
                     today_4 = today - timedelta(days=4)
                     dateref = today_4.strftime("%Y-%m-%d")
 
-                yyyy, mm, dd = dateref.split("-")
-                timestamp = datetime(int(yyyy), int(mm), int(dd))
             except ValueError:
                 logging.error("Wrong updating date = {dateref}".format(dateref=dateref))
                 self.response.write("Wrong updating date = {}".format(dateref))
@@ -63,6 +61,9 @@ class PrintUserUsage(webapp2.RequestHandler):
 
             if not page_token:
                 bvi_log(date=dateref, resource='user_usage', message_id='start', message='Start of /user_usage call')
+                decoratorDate = "".join(dateref.split("-"))
+                # delete table if it exists to avoid data duplication
+                delete_table_big_query('user_usage${decoratorDate}'.format(decoratorDate=decoratorDate))
 
             maxPages = cfg['task_management']['max_pages']
             maxPages = int(maxPages)
