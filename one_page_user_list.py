@@ -39,12 +39,12 @@ class PrintOneUserListPage(webapp2.RequestHandler):
         token = self.request.get('token')
         domain = self.request.get('domain')
         dDate = self.request.get('date')
-        decoratorDate = ("").join(dDate.split("-"))
+        decoratorDate = "".join(dDate.split("-"))
         try:
             for report_items in returnUserListPageToken(token, dDate, domain, cfg['credentials']['general'],
                                                         cfg['super_admin']['delegated']):
                 try:
-                    bq_answer = writeDatainBigQuery(report_items, 'users_list_date${decoratorDate}'.format(
+                    writeDatainBigQuery(report_items, 'users_list_date${decoratorDate}'.format(
                         decoratorDate=decoratorDate))
                 except Exception as err:
                     bvi_log(date=dDate, resource='users_list', message_id='bigquery_error', message=err,
