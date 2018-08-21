@@ -461,6 +461,31 @@ setup['tables'] = [
         'type': 'table',
     },
     {
+        'name': 'daily_report_status',
+        'dataset': 'raw_data',
+        'description': 'Daily Report Status',
+        'schema': {
+            'fields': [
+                {
+                    "mode": "NULLABLE",
+                    "name": "executionTime",
+                    "type": "TIMESTAMP"
+                },
+                {
+                    "mode": "NULLABLE",
+                    "name": "report_date",
+                    "type": "STRING"
+                },
+                {
+                    "mode": "NULLABLE",
+                    "name": "result",
+                    "type": "BOOLEAN"
+                }
+            ]
+        },
+        'type': 'table',
+    },
+    {
         'name': 'latest_date_users_list_date',
         'dataset': 'raw_data',
         'description': 'Available dates for users_list_date (from more recent to oldest)',

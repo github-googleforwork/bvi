@@ -19,8 +19,9 @@
 import logging
 import webapp2
 
-from datetime import date
+from datetime import datetime
 from util import send_email
+from main import writeDatainBigQuery
 
 from main import createBigQueryService
 from bigquery_api import fetch_big_query_data, convert_big_query_result
@@ -32,14 +33,15 @@ with open("config.yaml", 'r') as ymlfile:
 
 
 DAILY_STATUS = {
-    '1': 'date',
-    '2': 'status',
-    '3': 'value'
+    '1': 'report_date',
+    '2': 'status'
 }
 
 
-class SendEmailFailure(webapp2.RequestHandler):
+class CheckFailure(webapp2.RequestHandler):
     def get(self):
+
+        dateref = self.request.get('dateref')
 
         def prepare_and_send_email():
             to = cfg['notification_email']
@@ -53,7 +55,8 @@ class SendEmailFailure(webapp2.RequestHandler):
             image_link = "https://{}.appspot.com/images/google-cloud.png".format(project_id)
 
             template_values = {
-                'day': day,
+                'project': project_id,
+                'day': dateref,
                 'image_link': image_link
             }
 
@@ -65,24 +68,31 @@ class SendEmailFailure(webapp2.RequestHandler):
         project_id = cfg['ids']['project_id']
         bigquery = createBigQueryService(scopes, 'bigquery', 'v2')
 
-        today = date.today()
-        day = today.strftime("%Y-%m-%d")
+        logging.info('Checking the processes for [{}]'.format(dateref))
 
-        logging.info('Checking the processes for [{}]'.format(day))
-
-        query = "SELECT date, status, value FROM logs.daily_status ORDER BY date desc LIMIT 1"
+        query = "SELECT report_date, status FROM logs.status_board WHERE report_date = \'" + dateref + "\'"
 
         result = fetch_big_query_data(bigquery, project_id, query, 10)
         rows = convert_big_query_result(result, DAILY_STATUS)
 
         if len(rows) == 0:
-            logging.info("There is no result for daily status so there is nothing to do.".format(day))
-        elif day == rows[0]['date'] and rows[0]['status'] == 'SUCCESS':
-            logging.info("All processes for the day[{}] went well, so no email to be sent.".format(day))
+            result = None
+            logging.info("There is no result for daily status so there is nothing to do.")
+        elif dateref == rows[0]['report_date'] and rows[0]['status'] == '0':
+            result = True
+            logging.info("All processes for the day[{}] went well, so no email to be sent.".format(dateref))
         else:
-            logging.info("There is something wrong so an email will be sent to the admin.".format(day))
+            result = False
+            logging.info("There is something wrong so an email will be sent to the admin.")
             prepare_and_send_email()
 
+        try:
+            logging.info("Writing daily run results to BQ for the day[{}]...".format(dateref))
+            row = [{u'executionTime': datetime.utcnow().strftime("%s"), u'report_date': dateref, u'result': result}]
+            writeDatainBigQuery(row, 'daily_report_status')
+        except Exception:
+            logging.info("Error writing daily run results to BQ for the day[{}].".format(dateref))
 
-application = webapp2.WSGIApplication([('/send_failure_email', SendEmailFailure)],
+
+application = webapp2.WSGIApplication([('/exec_check_failure', CheckFailure)],
                                       debug=True)

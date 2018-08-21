@@ -59,7 +59,7 @@ queue:
     task_age_limit: 4h
     min_backoff_seconds: 100
     max_backoff_seconds: 200
-- name: sendFailureEmailQ
+- name: checkFailureQ
   rate: 1/s
   bucket_size: 5
   retry_parameters:

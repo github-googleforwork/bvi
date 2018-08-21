@@ -14,14 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This file implements the check failure endpoint. It creates a send_failure_email task in the queue that
+# This file implements the check failure endpoint. It creates a exec_check_failure task in the queue that
 # sends an email if the daily execution has failed.
 
 import logging
 import webapp2
 
 from google.appengine.api import taskqueue
-from datetime import date
+from datetime import date, timedelta
 
 import yaml
 with open("config.yaml", 'r') as ymlfile:
@@ -32,15 +32,26 @@ class EmailSender(webapp2.RequestHandler):
     def get(self):
         logging.info('Job to send email to admins in case of any failure')
 
+        dateref = self.request.get('dateref', 'from_cron')
         today = date.today()
-        day = today.strftime("%Y-%m-%d")
+        try:
+            if dateref == 'from_cron':
+                # [today - 4]
+                today_4 = today - timedelta(days=4)
+                dateref = today_4.strftime('%Y-%m-%d')
 
+        except ValueError:
+            logging.error('Wrong updating date = {}'.format(dateref))
+            self.response.write('Wrong updating date = {}'.format(dateref))
+            return
+
+        day = today.strftime("%Y-%m-%d")
         logging.info('Checking the processes for [{}]'.format(day))
 
-        queue_name = cfg['queues']['failure_email']
+        queue_name = cfg['queues']['check_failure']
 
         taskqueue.add(queue_name=queue_name,
-                      url='/send_failure_email',
+                      url='/exec_check_failure?dateref=' + dateref,
                       method='GET')
 
 

@@ -1,9 +1,0 @@
-cron:
-- description: "run data consolidation"
-  url: /run
-  schedule: every day 00:20
-  timezone: America/Denver
-- description: "Check and send email to admins in case of any failure"
-  url: /check_failure
-  schedule: every day 03:45
-  timezone: America/Denver

@@ -40,4 +40,8 @@ bqUpdate6:
 bqCustomUpdate1:
   endpoint: /bq_api?op=custom_update&level=1&dateref=from_cron
   queues: bqUpdateByLevel1
+  next_step: checkFailure
+checkFailure:
+  endpoint: /check_failure?dateref=from_cron
+  queues: checkFailureQ
   next_step:

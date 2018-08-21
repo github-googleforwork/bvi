@@ -37,4 +37,8 @@ bqUpdate6:
 bqCustomUpdate1:
   endpoint: /historical_update?Level=custom&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel1
+  next_step: checkFailure
+checkFailure:
+  endpoint: /check_failure?Sdate=start_date&Edate=end_date
+  queues: checkFailureQ
   next_step:

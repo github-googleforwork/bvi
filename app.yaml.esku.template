@@ -27,8 +27,11 @@ handlers:
 - url: /check_failure
   script: check_failure.application
 
-- url: /send_failure_email
-  script: send_failure_email.application
+- url: /exec_check_failure
+  script: exec_check_failure.application
+
+- url: /historical_check_failure
+  script: historical_check_failure.application
 
 - url: /
   script: main.application

@@ -1,0 +1,5 @@
+cron:
+- description: "run data consolidation"
+  url: /run
+  schedule: every day 00:20
+  timezone: America/Denver

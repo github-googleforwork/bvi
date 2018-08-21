@@ -12,7 +12,7 @@ queues:
   activities: activityq
   user_usage: usageq
   volume_report: volumeReportQ
-  failure_email: sendFailureEmailQ
+  check_failure: checkFailureQ
 
 credentials:
   general: credential/NAME_OF_CREDENTIALS_FILE.json
