@@ -1,4 +1,4 @@
--- content_latest_30d
+-- content_latest_30d (view)
 -- Review: 06/04/2017
 SELECT
   CURRENT_DATE() AS date,

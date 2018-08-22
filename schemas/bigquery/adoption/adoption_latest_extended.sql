@@ -1,4 +1,4 @@
--- adoption_latest_extended
+-- adoption_latest_extended (view)
 -- Review: 10/10/2017
 SELECT
   date,

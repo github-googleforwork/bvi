@@ -1,4 +1,4 @@
--- latest_date_audit_log
+-- latest_date_audit_log (view)
 -- Review: 23/10/2017
 SELECT
   date_prof AS date,

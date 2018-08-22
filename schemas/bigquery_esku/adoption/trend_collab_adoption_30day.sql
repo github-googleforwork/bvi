@@ -1,4 +1,4 @@
--- trend_collab_adoption_30day
+-- trend_collab_adoption_30day (view)
 
 SELECT
   date AS date,

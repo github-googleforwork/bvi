@@ -1,4 +1,4 @@
--- product_adoption_latest_30d
+-- product_adoption_latest_30d (view)
 -- Review: 04/12/2018
 SELECT
   final.ou AS ou,

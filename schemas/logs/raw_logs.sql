@@ -1,3 +1,4 @@
+-- raw_logs (view)
 SELECT
   TIMESTAMP_TO_USEC(protoPayload.line.time) as time_usec,
   REGEXP_EXTRACT(log_message, "DATE=(?s)(.*) ::: RESOURCE=") AS date,

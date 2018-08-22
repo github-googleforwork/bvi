@@ -1,4 +1,4 @@
--- latest_date_customer_usage
+-- latest_date_customer_usage (view)
 SELECT
   usage.date AS date,
   COUNT(*) AS count

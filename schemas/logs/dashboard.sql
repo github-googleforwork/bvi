@@ -1,3 +1,4 @@
+-- dashboard (view)
 SELECT
   IF(pre_dash.side1.resource == 'exec', "=========", DATE(pre_dash.side1.date)) AS report_date,
   DATE(pre_dash_time) AS run_date,

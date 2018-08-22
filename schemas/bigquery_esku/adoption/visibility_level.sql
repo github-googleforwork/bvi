@@ -1,4 +1,4 @@
--- visibility_level
+-- visibility_level (view)
 SELECT
   public_level, visibility
 FROM (

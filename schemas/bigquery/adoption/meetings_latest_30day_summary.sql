@@ -1,4 +1,4 @@
--- meetings_latest_30day_summary
+-- meetings_latest_30day_summary (view)
 -- Review: 2018-07-10
 
 SELECT

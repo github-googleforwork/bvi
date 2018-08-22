@@ -1,4 +1,4 @@
--- num_calls_latest_30day_by_device
+-- num_calls_latest_30day_by_device (view)
 -- Review: 2018-03-21
 
 SELECT device, num_calls FROM

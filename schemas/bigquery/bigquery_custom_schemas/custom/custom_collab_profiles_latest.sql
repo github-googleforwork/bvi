@@ -1,4 +1,4 @@
--- CUSTOM custom_collab_profiles_latest
+-- CUSTOM custom_collab_profiles_latest (view)
 -- Review: 25/01/2018
 
 SELECT

@@ -1,6 +1,5 @@
--- collab_profiles_pie_chart
+-- collab_profiles_pie_chart (view)
 -- Review: 28/02/2017
--- Propose to be deteled 
 SELECT
   CURRENT_DATE() AS date,
   type,

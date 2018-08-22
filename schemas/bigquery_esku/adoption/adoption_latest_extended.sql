@@ -1,4 +1,4 @@
--- adoption_latest_extended
+-- adoption_latest_extended (view)
 SELECT
   date,
   IFNULL(accounts.num_30day_logins,0) AS active_users,

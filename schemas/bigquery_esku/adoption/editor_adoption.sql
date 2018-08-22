@@ -1,4 +1,4 @@
--- editor_adoption
+-- editor_adoption (view)
 -- Review: 27/02/2017
 SELECT
   SUM(active_users) AS active_users,

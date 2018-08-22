@@ -1,4 +1,4 @@
--- adoption_latest
+-- adoption_latest (view)
 
 SELECT
   customer_usage.date AS date,

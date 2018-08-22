@@ -1,4 +1,4 @@
--- meetings_per_calls_group
+-- meetings_per_calls_group (view)
 -- Review: 2018-03-21
 
 SELECT meeting_calls_group, number_meetings, avg_time_spent_meetings, index FROM

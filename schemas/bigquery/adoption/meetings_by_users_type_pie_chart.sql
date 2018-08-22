@@ -1,4 +1,4 @@
--- meetings_by_users_type_pie_chart
+-- meetings_by_users_type_pie_chart (view)
 -- Review: 2018-03-21
 
 SELECT user_type, meetings_with, index FROM

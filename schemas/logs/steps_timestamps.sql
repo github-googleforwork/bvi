@@ -1,3 +1,4 @@
+-- steps_timestamps (view)
 SELECT
   side1.start_time AS start_time,
   side1.next_time AS next_time,

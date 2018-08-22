@@ -1,4 +1,4 @@
--- calls_time_spent_latest_30day_by_device
+-- calls_time_spent_latest_30day_by_device (view)
 -- Review: 2018-03-21
 
 SELECT date, device, time_spent_call FROM

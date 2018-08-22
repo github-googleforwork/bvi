@@ -1,6 +1,5 @@
--- collab_profiles_latest
+-- collab_profiles_latest (view)
 -- Review: 27/02/2017
--- Propose to be deteled 
 SELECT
   ou,
   SUM(readers) AS readers,

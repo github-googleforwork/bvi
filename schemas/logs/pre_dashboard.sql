@@ -1,3 +1,4 @@
+-- pre_dashboard (view)
 SELECT
   side1.date,
   side1.start_time,

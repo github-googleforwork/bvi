@@ -1,4 +1,4 @@
--- latest_date_audit_log
+-- latest_date_audit_log (view)
 SELECT
   date_prof,
   pt,

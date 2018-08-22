@@ -1,4 +1,4 @@
--- product_adoption_latest
+-- product_adoption_latest (view)
 -- Review: 23/02/2017
 SELECT
   adoption.date AS date,
