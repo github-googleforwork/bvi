@@ -72,16 +72,20 @@ FROM
  ) active_users
   ON active_users.date = customer_usage.date
 LEFT JOIN (
-  SELECT
-    STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d") AS date,
-    EXACT_COUNT_DISTINCT(drive.doc_id) AS total_num_docs
-  FROM
-    [YOUR_PROJECT_ID:Reports.activity]
+  SELECT date, EXACT_COUNT_DISTINCT(drive.doc_id) AS total_num_docs FROM (
+    SELECT
+      STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d") AS date,
+      NTH(2, SPLIT(email, '@')) AS domain,
+      drive.doc_id
+    FROM
+      [YOUR_PROJECT_ID:Reports.activity]
+    WHERE
+      event_name = 'create'
+      AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")
+      AND _PARTITIONTIME <= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, 2,"DAY")
+      AND DATE(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) = DATE(YOUR_TIMESTAMP_PARAMETER))
   WHERE
-    event_name = 'create'
-    AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")
-    AND _PARTITIONTIME <= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, 2,"DAY")
-    AND DATE(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) = DATE(YOUR_TIMESTAMP_PARAMETER)
+    domain IN ( YOUR_DOMAINS )
   GROUP BY
     date ) num_docs
 ON

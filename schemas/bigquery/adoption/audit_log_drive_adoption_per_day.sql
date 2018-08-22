@@ -23,10 +23,7 @@ FROM (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER)
 WHERE
   true
-  AND domain IN (
-  SELECT
-    domain
-  FROM [YOUR_PROJECT_ID:users.users_list_domain] )
+  AND domain IN ( YOUR_DOMAINS )
   AND email IN (
     SELECT
       email

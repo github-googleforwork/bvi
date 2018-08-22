@@ -15,7 +15,7 @@ FROM (
     time_usec AS start_time,
     LEAD(time_usec, 1) OVER (PARTITION BY message_id ORDER BY time_usec) AS next_time
   FROM
-    [logs.raw_logs]
+    [YOUR_PROJECT_ID:logs.raw_logs]
   WHERE
     message_id = 'start') side1
 JOIN (

@@ -57,5 +57,4 @@ users.gmail_users_30day
 users.total_active_users_1day
 users.total_active_users_30day
 users.total_users_30day
-users.users_list_domain
 users.users_ou_list

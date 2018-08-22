@@ -8,6 +8,7 @@ FROM (
   SELECT
     date,
     user_email AS email,
+    NTH(2, SPLIT(user_email, '@')) AS domain,
     (drive.num_owned_items_created) AS num_docs
   FROM
     [YOUR_PROJECT_ID:Reports.usage]
@@ -26,5 +27,7 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER ) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 
   1,2, 3

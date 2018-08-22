@@ -11,6 +11,7 @@ FROM (
   SELECT
     date,
     entity.userEmail AS email,
+    NTH(2, SPLIT(entity.userEmail, '@')) AS domain,
     IF(parameters.name = "gplus:num_shares",IFNULL(parameters.intValue,NULL),0) as num_shares,
     IF(parameters.name = "gplus:num_plusones",IFNULL(parameters.intValue,NULL),0) as num_plusones,
     IF(parameters.name = "gplus:num_replies",IFNULL(parameters.intValue,NULL),0) as num_replies,
@@ -32,4 +33,6 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER ) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1,2,3,4,5,6,7

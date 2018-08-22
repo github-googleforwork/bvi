@@ -9,6 +9,7 @@ FROM (
   SELECT
     date,
     entity.userEmail AS email,
+    NTH(2, SPLIT(entity.userEmail, '@')) AS domain,
     parameters.intValue AS num_docs
   FROM
     [YOUR_PROJECT_ID:raw_data.user_usage]
@@ -27,5 +28,7 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER ) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 
   1,2, 3

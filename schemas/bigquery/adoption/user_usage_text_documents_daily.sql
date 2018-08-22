@@ -13,6 +13,7 @@ FROM (
   SELECT
     date,
     entity.userEmail AS email,
+    NTH(2, SPLIT(entity.userEmail, '@')) AS domain,
     IF(parameters.name = "drive:num_owned_google_documents_created",IFNULL(parameters.intValue,NULL), 0) as num_docs_created,
     IF(parameters.name = "drive:num_owned_google_documents_edited",IFNULL(parameters.intValue,NULL),0) as num_docs_edited,
     IF(parameters.name = "drive:num_owned_google_documents_trashed",IFNULL(parameters.intValue,NULL),0) as num_docs_trashed,
@@ -34,4 +35,6 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1,2,3,4,5,6,7,8

@@ -479,13 +479,6 @@ setup['tables'] = [
         'type': 'view',
     },
     {
-        'name': 'users_list_domain',
-        'dataset': 'users',
-        'description': 'Domain for the emails of this organization',
-        'level': 1,
-        'type': 'table_from_view',
-    },
-    {
         'name': 'users_ou_list',
         'dataset': 'users',
         'description': 'List of users that exist in raw_data.users_list_date within 30 days ago',

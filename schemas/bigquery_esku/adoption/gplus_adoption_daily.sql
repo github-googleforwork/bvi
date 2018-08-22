@@ -16,4 +16,5 @@ FROM
 LEFT JOIN [YOUR_PROJECT_ID:Reports.usage] usage
   ON usage.date = total_active_users.date
 WHERE usage._PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
+  AND usage.record_type = 'customer'
 GROUP BY 1

@@ -44,11 +44,7 @@ FROM (
         AND actor.email IS NOT NULL
         AND actor.email <> '' )
     WHERE
-      domain IN (
-      SELECT
-        domain
-      FROM
-        [YOUR_PROJECT_ID:users.users_list_domain] ) )
+      domain IN ( YOUR_DOMAINS ) )
   GROUP BY
     1,
     2)
