@@ -17,9 +17,5 @@ FROM (
     AND actor.email <> ""
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER) Audit_log
 WHERE
-  domain IN (
-  SELECT
-    domain
-  FROM
-    [YOUR_PROJECT_ID:users.users_list_domain] )
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1, 2

@@ -1,4 +1,4 @@
--- adoption_per_product
+-- adoption_per_product (view)
 -- Review: 01/03/2018
 
 SELECT date, index, product, p_adoption FROM

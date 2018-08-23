@@ -27,23 +27,26 @@ FROM
   SUM( CASE WHEN application_name = 'calendar' THEN (INTEGER(EXACT_COUNT_DISTINCT(data_email))) ELSE 0 END ) as calendar,
   SUM( CASE WHEN application_name = 'gplus' THEN (INTEGER(EXACT_COUNT_DISTINCT(data_email))) ELSE 0 END ) as gplus
 FROM (
-  SELECT
-    STRFTIME_UTC_USEC(id.time,"%Y-%m-%d") AS date,
-    actor.email AS data_email,
-    events.type,
-    events.name,
-    events.parameters.value AS product,
-    id.applicationName AS application_name, 
-    events.parameters.name AS parameters_name,
-    INTEGER(COUNT(*)) AS event
-  FROM
-    [YOUR_PROJECT_ID:raw_data.audit_log]
+  SELECT *, INTEGER(COUNT(*)) AS event FROM (
+      SELECT
+        STRFTIME_UTC_USEC(id.time,"%Y-%m-%d") AS date,
+        actor.email AS data_email,
+        events.type,
+        events.name,
+        CASE WHEN id.applicationName IN ('calendar', 'gplus') THEN '' ELSE events.parameters.value END AS product,
+        id.applicationName AS application_name,
+        CASE WHEN id.applicationName IN ('calendar', 'gplus') THEN '' ELSE events.parameters.name END AS parameters_name,
+        NTH(2, SPLIT(actor.email, '@')) AS domain
+      FROM
+        [YOUR_PROJECT_ID:raw_data.audit_log]
+      WHERE
+        TRUE
+        AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
+        AND events.type IS NOT NULL
+        AND id.applicationName in ('drive', 'calendar','gplus'))
+      GROUP BY 1, 2, 3, 4, 5, 6, 7, 8) data
   WHERE
-    TRUE
-    AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
-    AND events.type IS NOT NULL
-    AND id.applicationName in ('drive', 'calendar','gplus')
-  GROUP BY 1, 2, 3, 4, 5, 6, 7) data
+    domain IN ( YOUR_DOMAINS )
 GROUP BY 1, 2, product, application_name, parameters_name) adoption
 LEFT JOIN (
   SELECT ou, email

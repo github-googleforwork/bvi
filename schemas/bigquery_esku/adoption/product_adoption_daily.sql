@@ -27,24 +27,27 @@ FROM
   SUM( CASE WHEN record_type = 'calendar' THEN (INTEGER(EXACT_COUNT_DISTINCT(data_email))) ELSE 0 END ) as calendar,
   SUM( CASE WHEN record_type = 'gplus' THEN (INTEGER(EXACT_COUNT_DISTINCT(data_email))) ELSE 0 END ) as gplus
 FROM (
-  SELECT
-    STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d") AS date,
-    email as data_email,
-    event_type,
-    event_name,
-    drive.doc_type AS product,
-    record_type,
-    INTEGER(COUNT(*)) AS event
-  FROM
-    [YOUR_PROJECT_ID:Reports.activity]
+  SELECT *, INTEGER(COUNT(*)) AS event FROM (
+    SELECT
+      STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d") AS date,
+      email as data_email,
+      event_type,
+      event_name,
+      drive.doc_type AS product,
+      record_type,
+      NTH(2, SPLIT(email, '@')) AS domain
+    FROM
+      [YOUR_PROJECT_ID:Reports.activity]
+    WHERE
+      TRUE
+      AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")
+      AND _PARTITIONTIME <= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, 2,"DAY")
+      AND DATE(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) = DATE(YOUR_TIMESTAMP_PARAMETER)
+      AND event_type IS NOT NULL)
+  GROUP BY
+    1, 2, 3, 4, 5, 6, 7) data
   WHERE
-    TRUE
-    AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")
-    AND _PARTITIONTIME <= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, 2,"DAY")
-    AND DATE(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) = DATE(YOUR_TIMESTAMP_PARAMETER)
-    AND event_type IS NOT NULL
-GROUP BY
-  1, 2, 3, 4, 5, 6) data
+    domain IN ( YOUR_DOMAINS )
 GROUP BY 1, 2, product, record_type) adoption
 LEFT JOIN (
   SELECT ou, email

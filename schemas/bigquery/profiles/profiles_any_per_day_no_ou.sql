@@ -21,7 +21,7 @@ FROM
 WHERE
   TRUE 
   AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
-  AND domain IN (SELECT domain FROM [YOUR_PROJECT_ID:users.users_list_domain])
+  AND domain IN ( YOUR_DOMAINS )
   AND event_name IN ('create', 'upload', 'edit', 'view', 'change_acl_editors', 'change_document_access_scope',
     'change_document_visibility', 'change_user_access', 'team_drive_membership_change')
 GROUP BY 1, 2

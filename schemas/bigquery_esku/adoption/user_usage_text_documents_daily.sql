@@ -12,6 +12,7 @@ FROM (
   SELECT
     date,
     user_email AS email,
+    NTH(2, SPLIT(user_email, '@')) AS domain,
     drive.num_owned_google_documents_created  AS num_docs_created,
     drive.num_owned_google_documents_edited AS num_docs_edited,
     drive.num_owned_google_documents_trashed AS num_docs_trashed,
@@ -34,4 +35,6 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1,2,3,4,5,6,7,8

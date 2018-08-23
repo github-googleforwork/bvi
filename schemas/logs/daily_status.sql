@@ -1,3 +1,4 @@
+-- daily_status (view)
 SELECT
   date,
   IF(SUM(IF(dash.status = 'ERROR', 1, 0)) > 0, 'ERROR', 'SUCCESS') AS status,

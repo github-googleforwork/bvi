@@ -1,4 +1,4 @@
--- calls_time_spent_30day_by_user_type
+-- calls_time_spent_30day_by_user_type (view)
 -- Review: 2018-03-23
 
 SELECT date, user_type, time_spent_call FROM

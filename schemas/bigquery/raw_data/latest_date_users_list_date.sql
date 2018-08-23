@@ -1,4 +1,4 @@
--- latest_date_users_list_date
+-- latest_date_users_list_date (view)
 -- Review: 22/02/2017
 SELECT
   date,

@@ -1,4 +1,4 @@
--- collab_profiles_pie_chart_extended
+-- collab_profiles_pie_chart_extended (view)
 -- Review: 10/08/2017
 SELECT
   *

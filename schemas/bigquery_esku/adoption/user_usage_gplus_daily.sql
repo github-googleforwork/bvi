@@ -11,6 +11,7 @@ FROM (
   SELECT
     date,
     user_email AS email,
+    NTH(2, SPLIT(user_email, '@')) AS domain,
     gplus.num_shares as num_shares,
     gplus.num_plusones as num_plusones,
     gplus.num_replies as num_replies,
@@ -32,4 +33,6 @@ LEFT JOIN (
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER ) users
 ON
   users.email = user_usage.email
+WHERE
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1,2,3,4,5,6,7

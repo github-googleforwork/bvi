@@ -18,9 +18,5 @@ FROM (
     AND parameters.datetimeValue < DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER),1,"DAY")
     ) gmail_usage
 WHERE
-  domain IN (
-  SELECT
-    domain
-  FROM
-    [YOUR_PROJECT_ID:users.users_list_domain] )
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1, 2

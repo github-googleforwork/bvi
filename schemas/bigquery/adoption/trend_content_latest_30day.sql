@@ -1,4 +1,4 @@
--- trend_content_latest_30day
+-- trend_content_latest_30day (view)
 -- Review: 01/03/2018
 
 SELECT

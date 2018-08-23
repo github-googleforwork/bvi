@@ -1,4 +1,4 @@
--- CUSTOM custom_profiles_any_per_ou_last_N_days
+-- CUSTOM custom_profiles_any_per_ou_last_N_days (view)
 -- Review: 24/01/2018
 
 SELECT

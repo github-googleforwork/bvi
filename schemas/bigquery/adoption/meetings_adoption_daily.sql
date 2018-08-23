@@ -56,7 +56,7 @@ SELECT
   SUM(CASE WHEN parameters.name = 'meet:total_call_minutes_web' THEN (IFNULL(parameters.intValue,NULL)) ELSE 0 END) AS total_call_minutes_web,
   SUM(CASE WHEN parameters.name = 'meet:total_meeting_minutes' THEN (IFNULL(parameters.intValue,NULL)) ELSE 0 END) AS total_meeting_minutes,
 FROM
-  [raw_data.customer_usage]
+  [YOUR_PROJECT_ID:raw_data.customer_usage]
 WHERE TRUE
   AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
 GROUP BY 1

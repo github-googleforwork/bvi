@@ -75,15 +75,19 @@ FROM
  ) active_users
   ON active_users.date = customer_usage.date
 LEFT JOIN (
-  SELECT
-    DATE(id.time) AS date,
-    EXACT_COUNT_DISTINCT(id.uniqueQualifier) AS total_num_docs
-  FROM
-    [YOUR_PROJECT_ID:raw_data.audit_log]
+  SELECT date, domain, EXACT_COUNT_DISTINCT(id.uniqueQualifier) AS total_num_docs FROM (
+    SELECT
+      DATE(id.time) AS date,
+      NTH(2, SPLIT(actor.email, '@')) AS domain,
+      id.uniqueQualifier
+    FROM
+      [YOUR_PROJECT_ID:raw_data.audit_log]
+    WHERE
+      events.name = 'create'
+      AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER)
   WHERE
-    events.name = 'create'
-    AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
+    domain IN ( YOUR_DOMAINS )
   GROUP BY
-    date ) num_docs
+    date, domain ) num_docs
 ON
   num_docs.date = customer_usage.date

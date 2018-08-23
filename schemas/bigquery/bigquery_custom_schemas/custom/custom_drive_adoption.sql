@@ -1,4 +1,4 @@
--- custom_drive_adoption
+-- custom_drive_adoption (view)
 -- Review: 22/01/2018
 
 SELECT

@@ -1,4 +1,4 @@
--- CUSTOM custom_active_users_30da_per_ou
+-- CUSTOM custom_active_users_30da_per_ou (view)
 -- Review: 24/01/2018
 
 SELECT

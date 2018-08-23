@@ -328,9 +328,14 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
     else:
         timestamp = "TIMESTAMP('{timestamp}')".format(timestamp=timestamp)
 
+    domains = list(set(cfg['domains'].split(";")))
+    domains_str = "'" + "', '".join(map(str.strip, domains)) + "'"
+
     query_fp = open('{folder}/{dataset}/{name}.sql'.format(folder=folder, dataset=view_dataset, name=view_name), 'r')
     query_string = query_fp.read()
     query_string = query_string.replace("YOUR_PROJECT_ID", cfg['ids']['project_id'])
+    query_string = query_string.replace("YOUR_DOMAINS", domains_str)
+
     query_string = query_string.replace("YOUR_TIMESTAMP_PARAMETER", timestamp)
     query_fp.close()
 

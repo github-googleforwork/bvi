@@ -1,4 +1,4 @@
--- collaboration_adoption_latest_30d
+-- collaboration_adoption_latest_30d (view)
 -- Review: 27/02/2017
 SELECT 
   adoption.ou AS ou,

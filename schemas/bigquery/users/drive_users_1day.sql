@@ -16,9 +16,5 @@ FROM (
     AND events.parameters.name = 'primary_event'
     AND _PARTITIONTIME = TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)) drive_usage
 WHERE
-  domain IN (
-  SELECT
-    domain
-  FROM
-    [YOUR_PROJECT_ID:users.users_list_domain] )
+  domain IN ( YOUR_DOMAINS )
 GROUP BY 1, 2

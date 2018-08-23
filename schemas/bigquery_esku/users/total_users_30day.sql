@@ -16,11 +16,7 @@ FROM (
     AND accounts.is_suspended = false
     AND record_type = 'user') user_usage
 WHERE
-  domain IN (
-  SELECT
-    domain
-  FROM
-    [YOUR_PROJECT_ID:users.users_list_domain] )
+  domain IN ( YOUR_DOMAINS )
 GROUP BY
   1
 ORDER BY

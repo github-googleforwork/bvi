@@ -20,11 +20,7 @@ FROM (
     AND TIMESTAMP(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) < DATE_ADD(YOUR_TIMESTAMP_PARAMETER,1,"DAY")
     ) drive_usage
 WHERE
-  domain IN (
-  SELECT
-    domain
-  FROM
-    [YOUR_PROJECT_ID:users.users_list_domain] )
+  domain IN ( YOUR_DOMAINS )
 GROUP BY
   1,
   2

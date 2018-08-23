@@ -62,11 +62,7 @@ FROM (
       WHERE
         _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -30, "DAY")
         AND _PARTITIONTIME < DATE_ADD(YOUR_TIMESTAMP_PARAMETER,1,"DAY")
-        AND domain IN (
-            SELECT
-              domain
-            FROM
-              [YOUR_PROJECT_ID:users.users_list_domain])
+        AND domain IN ( YOUR_DOMAINS )
         AND event_name IN ('create', 'upload', 'edit', 'view', 'change_acl_editors', 'change_document_access_scope',
           'change_document_visibility', 'change_user_access', 'team_drive_membership_change')
       GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 )

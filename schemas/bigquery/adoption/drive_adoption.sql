@@ -1,4 +1,4 @@
--- drive_adoption
+-- drive_adoption (view)
 -- Review: 06/04/2017
 SELECT
   *

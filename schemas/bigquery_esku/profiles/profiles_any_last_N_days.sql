@@ -1,4 +1,4 @@
--- profiles_any_last_N_days
+-- profiles_any_last_N_days (view)
 -- Review: 24/08/2017
 SELECT
   CURRENT_DATE() AS date,

@@ -1,4 +1,4 @@
--- latest_date_customer_usage
+-- latest_date_customer_usage (view)
 -- Review: 22/02/2017
 SELECT
   date,

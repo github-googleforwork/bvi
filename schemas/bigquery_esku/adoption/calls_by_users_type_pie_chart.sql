@@ -1,4 +1,4 @@
--- calls_by_users_type_pie_chart
+-- calls_by_users_type_pie_chart (view)
 -- Review: 2018-03-19
 
 SELECT user_type, number_of_calls, calls_time_spent, index FROM

@@ -128,13 +128,6 @@ setup['tables'] = [
         'type': 'view',
     },
     {
-        'name': 'users_list_domain',
-        'dataset': 'users',
-        'description': 'Domain for the emails of this organization',
-        'level': 1,
-        'type': 'table_from_view',
-    },
-    {
         'name': 'audit_log_profilable_events',
         'dataset': 'raw_data',
         'description': 'Events that are relevant for further analysis',
