@@ -1,0 +1,36 @@
+first:
+  endpoint: /historical_update?Level=1&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel1
+  next_step: bqUpdate2
+bqUpdate2:
+  endpoint: /historical_update?Level=2&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel2
+  next_step: bqUpdate3
+bqUpdate3:
+  endpoint: /historical_update?Level=3&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel3
+  next_step: bqUpdate4
+bqUpdate4:
+  endpoint: /historical_update?Level=4&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel4
+  next_step: bqUpdate5
+bqUpdate5:
+  endpoint: /historical_update?Level=5&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel5
+  next_step: bqUpdate6
+bqUpdate6:
+  endpoint: /historical_update?Level=6&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel6
+  next_step: bqUpdate7
+bqUpdate7:
+  endpoint: /historical_update?Level=7&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel7
+  next_step: bqCustomUpdate1
+bqCustomUpdate1:
+  endpoint: /historical_update?Level=custom&Sdate=start_date&Edate=end_date
+  queues: bqUpdateByLevel1
+  next_step: checkFailure
+checkFailure:
+  endpoint: /check_failure?Sdate=start_date&Edate=end_date
+  queues: checkFailureQ
+  next_step:

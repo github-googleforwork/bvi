@@ -1,0 +1,36 @@
+first:
+  endpoint: /user
+  queues: userq1,userq2,userq3
+  next_step: bqUpdate1
+bqUpdate1:
+  endpoint: /bq_api?op=update&level=1&dateref=from_cron
+  queues: bqUpdateByLevel1
+  next_step: bqUpdate2
+bqUpdate2:
+  endpoint: /bq_api?op=update&level=2&dateref=from_cron
+  queues: bqUpdateByLevel2
+  next_step: bqUpdate3
+bqUpdate3:
+  endpoint: /bq_api?op=update&level=3&dateref=from_cron
+  queues: bqUpdateByLevel3
+  next_step: bqUpdate4
+bqUpdate4:
+  endpoint: /bq_api?op=update&level=4&dateref=from_cron
+  queues: bqUpdateByLevel4
+  next_step: bqUpdate5
+bqUpdate5:
+  endpoint: /bq_api?op=update&level=5&dateref=from_cron
+  queues: bqUpdateByLevel5
+  next_step: bqUpdate6
+bqUpdate6:
+  endpoint: /bq_api?op=update&level=6&dateref=from_cron
+  queues: bqUpdateByLevel6
+  next_step: bqCustomUpdate1
+bqCustomUpdate1:
+  endpoint: /bq_api?op=custom_update&level=1&dateref=from_cron
+  queues: bqUpdateByLevel1
+  next_step: checkFailure
+checkFailure:
+  endpoint: /check_failure?dateref=from_cron
+  queues: checkFailureQ
+  next_step:
