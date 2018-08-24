@@ -48,7 +48,7 @@ FROM (
       drive.doc_type AS product,
       INTEGER(COUNT(*)) AS event
     FROM
-      [YOUR_PROJECT_ID:Reports.activity] AS audit
+      [YOUR_PROJECT_ID:EXPORT_DATASET.activity] AS audit
     WHERE
       TRUE
       AND _PARTITIONTIME >= DATE_ADD(CURRENT_DATE(), -31, "DAY")

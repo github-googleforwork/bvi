@@ -18,7 +18,7 @@ FROM (
     drive.num_owned_google_forms_trashed AS num_forms_trashed,
     drive.num_owned_google_forms_viewed AS num_forms_viewed
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE TRUE
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     AND (drive.num_owned_google_forms_created + drive.num_owned_google_forms_edited + drive.num_owned_google_forms_trashed + drive.num_owned_google_forms_viewed) > 0

@@ -19,7 +19,7 @@ FROM (
     GROUP_CONCAT(drive.old_value) AS old_value,
     GROUP_CONCAT(drive.new_value) AS new_value
   FROM
-    [YOUR_PROJECT_ID:Reports.activity]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
   WHERE
     TRUE
     AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")

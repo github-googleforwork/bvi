@@ -38,7 +38,7 @@ SELECT
   IFNULL(ROUND(drive.num_sharers/drive.num_1day_active_users, 2),0) AS P_sharers,
   IFNULL(ROUND((drive.num_1day_active_users - GREATEST(drive.num_creators, drive.num_collaborators, drive.num_consumers, drive.num_sharers))/drive.num_1day_active_users, 2),0) AS P_idles
 FROM
-  [YOUR_PROJECT_ID:Reports.usage] customer_usage
+  [YOUR_PROJECT_ID:EXPORT_DATASET.usage] customer_usage
 WHERE TRUE
   AND _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-10,"DAY")
   AND _PARTITIONTIME <= DATE_ADD(CURRENT_DATE(),-4,"DAY")

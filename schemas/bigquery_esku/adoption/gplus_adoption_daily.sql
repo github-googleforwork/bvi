@@ -13,7 +13,7 @@ SELECT
   SUM(gplus.num_shares) AS num_shares
 FROM
   [YOUR_PROJECT_ID:users.total_active_users_30day] total_active_users
-LEFT JOIN [YOUR_PROJECT_ID:Reports.usage] usage
+LEFT JOIN [YOUR_PROJECT_ID:EXPORT_DATASET.usage] usage
   ON usage.date = total_active_users.date
 WHERE usage._PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
   AND usage.record_type = 'customer'

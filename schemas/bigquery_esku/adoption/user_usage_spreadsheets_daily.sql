@@ -18,7 +18,7 @@ FROM (
     drive.num_owned_google_spreadsheets_trashed AS num_sheets_trashed,
     drive.num_owned_google_spreadsheets_viewed AS num_sheets_viewed
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE
     TRUE
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER

@@ -37,7 +37,7 @@ FROM (
       record_type,
       NTH(2, SPLIT(email, '@')) AS domain
     FROM
-      [YOUR_PROJECT_ID:Reports.activity]
+      [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
     WHERE
       TRUE
       AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")

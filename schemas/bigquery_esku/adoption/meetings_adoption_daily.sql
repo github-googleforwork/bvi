@@ -56,7 +56,7 @@ SELECT
   meet.total_call_minutes_web AS total_call_minutes_web,
   meet.total_meeting_minutes AS total_meeting_minutes
 FROM
-  [YOUR_PROJECT_ID:Reports.usage]
+  [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
 WHERE
   TRUE
   AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER

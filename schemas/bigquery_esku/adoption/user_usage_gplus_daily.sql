@@ -17,7 +17,7 @@ FROM (
     gplus.num_replies as num_replies,
     gplus.num_reshares as num_reshares
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE
     _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     AND (gplus.num_shares + gplus.num_plusones + gplus.num_replies + gplus.num_reshares) > 0

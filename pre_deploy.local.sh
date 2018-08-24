@@ -173,5 +173,8 @@ else
 fi
 
 echo "config.yaml has been generated. Please check it before deploying!"
-echo "IMPORTANT: remember to put your credential files under credentials folder and set them properly in config.yaml!!!"
-echo "IMPORTANT: Remember to share the business survey and custom fields spreadsheets with the same service account email address used to access BigQuery data!!!"
+echo "CHECK 1: Put your credential files under credentials folder and set them properly in config.yaml"
+echo "CHECK 2: If you set any of the spreadsheets (business survey or custom fields), "
+echo "         share these spreadsheets with the same service account email address used to access BigQuery data!!!"
+echo "CHECK 3: When using BigQuery export from GSuite to a dataset different from the default one (Reports),"
+echo "         set the correct name in 'export_dataset' in config.yaml"

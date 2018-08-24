@@ -33,7 +33,7 @@ FROM (
     ROUND(usage.drive.num_30day_active_users/usage.accounts.num_users, 2) AS P_drive_adoption,
     ROUND(usage.gplus.num_30day_active_users/usage.accounts.num_users, 2) AS P_gplus_adoption
   FROM
-    [YOUR_PROJECT_ID:Reports.usage] usage
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage] usage
   WHERE
     usage.record_type = 'customer') customer_usage
 INNER JOIN

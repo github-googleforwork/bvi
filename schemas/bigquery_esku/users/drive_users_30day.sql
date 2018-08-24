@@ -9,7 +9,7 @@ FROM (
     email,
     NTH(2, SPLIT(email, '@')) AS domain
   FROM
-    [YOUR_PROJECT_ID:Reports.activity]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
   WHERE
     record_type = 'drive'
     AND email <> ''

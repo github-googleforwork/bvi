@@ -41,7 +41,7 @@ LEFT JOIN (
           drive.doc_type AS product,
           COUNT(*) AS count
         FROM
-          [YOUR_PROJECT_ID:Reports.activity] audit
+          [YOUR_PROJECT_ID:EXPORT_DATASET.activity] audit
         JOIN (
           SELECT
             users_ou_list.email email,
@@ -64,7 +64,7 @@ LEFT JOIN (
           SELECT
             drive.doc_id
           FROM
-            [YOUR_PROJECT_ID:Reports.activity]
+            [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
           WHERE
             TRUE
             AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -11, "DAY")

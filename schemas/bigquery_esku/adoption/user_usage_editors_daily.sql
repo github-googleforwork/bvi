@@ -13,7 +13,7 @@ FROM (
     drive.num_owned_items_edited,
     drive.num_owned_items_trashed
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE
     TRUE
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER

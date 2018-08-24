@@ -3,7 +3,7 @@ SELECT
   usage.date AS date,
   COUNT(*) AS count
 FROM
-  [YOUR_PROJECT_ID:Reports.usage] usage
+  [YOUR_PROJECT_ID:EXPORT_DATASET.usage] usage
 WHERE
   usage.record_type = 'user'
 GROUP BY 1

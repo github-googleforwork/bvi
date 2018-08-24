@@ -9,7 +9,7 @@ FROM (
     LOWER(email) AS email,
     NTH(2, SPLIT(email, '@')) AS domain
   FROM
-    [YOUR_PROJECT_ID:Reports.activity]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
   WHERE
     record_type IN ('admin', 'drive', 'calendar', 'gplus')
     AND event_type IS NOT NULL

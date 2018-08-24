@@ -24,6 +24,8 @@ domains: YOUR_DOMAINS_SEPARATED_BY_SEMICOLON
 
 plan: Enterprise
 
+export_dataset: Reports
+
 google_sheets_link: GOOGLE_SHEETS_LINK
 
 custom_fields_sheets_link: CUSTOM_FIELDS_SHEETS_LINK

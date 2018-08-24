@@ -28,7 +28,7 @@ FROM
       (stats.gmail.num_30day_active_users) AS gmail_30_day_active,
       (stats.gplus.num_30day_active_users) AS gplus_30_day_active,
       (stats.calendar.num_30day_active_users) AS calendar_30_day_active,
-    FROM [YOUR_PROJECT_ID:Reports.usage] stats
+    FROM [YOUR_PROJECT_ID:EXPORT_DATASET.usage] stats
     WHERE TRUE
       AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
       AND stats.record_type = 'customer'
@@ -78,7 +78,7 @@ LEFT JOIN (
       NTH(2, SPLIT(email, '@')) AS domain,
       drive.doc_id
     FROM
-      [YOUR_PROJECT_ID:Reports.activity]
+      [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
     WHERE
       event_name = 'create'
       AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -1, "DAY")

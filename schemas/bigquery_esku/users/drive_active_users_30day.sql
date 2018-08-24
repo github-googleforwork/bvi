@@ -36,7 +36,7 @@ FROM (
         IF(drive.doc_type = "drawing", 1, 0) AS drawing_adoption,
         IF(record_type = "drive", 1, 0) AS drive_adoption
       FROM
-        [YOUR_PROJECT_ID:Reports.activity]
+        [YOUR_PROJECT_ID:EXPORT_DATASET.activity]
       WHERE
         TRUE
         AND _PARTITIONTIME >= DATE_ADD(YOUR_TIMESTAMP_PARAMETER, -31, "DAY")

@@ -18,7 +18,7 @@ FROM (
     drive.num_owned_google_drawings_trashed AS num_draws_trashed,
     drive.num_owned_google_drawings_viewed AS num_draws_viewed
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE TRUE
     AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     AND (drive.num_owned_google_drawings_created + drive.num_owned_google_drawings_edited + drive.num_owned_google_drawings_trashed + drive.num_owned_google_drawings_viewed) > 0

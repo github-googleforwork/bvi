@@ -9,7 +9,7 @@ FROM (
     user_email AS email,
     NTH(2, SPLIT(user_email, '@')) AS domain
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE
     _PARTITIONTIME = TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
     AND record_type = 'user'

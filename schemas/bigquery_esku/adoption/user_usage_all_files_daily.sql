@@ -11,7 +11,7 @@ FROM (
     NTH(2, SPLIT(user_email, '@')) AS domain,
     (drive.num_owned_items_created) AS num_docs
   FROM
-    [YOUR_PROJECT_ID:Reports.usage]
+    [YOUR_PROJECT_ID:EXPORT_DATASET.usage]
   WHERE
     _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     AND (drive.num_owned_items_created + drive.num_owned_items_edited + drive.num_owned_items_trashed + drive.num_owned_items_viewed) > 0
