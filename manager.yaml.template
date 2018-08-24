@@ -1,9 +1,9 @@
 first:
+  endpoint: /customer?date=from_cron
+  next_step: user
+user:
   endpoint: /user
   queues: userq1,userq2,userq3
-  next_step: customer_usage
-customer_usage:
-  endpoint: /customer?date=from_cron
   next_step: user_usage
 user_usage:
   endpoint: /user_usage?date=from_cron

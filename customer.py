@@ -24,8 +24,7 @@
 
 import logging
 import webapp2
-from main import returnCustomerUsageReport, writeDatainBigQuery, delete_table_big_query
-from datetime import date, timedelta
+from main import returnCustomerUsageReport, writeDatainBigQuery, delete_table_big_query, get_dateref_or_from_cron
 from bvi_logger import bvi_log
 
 import yaml
@@ -42,12 +41,7 @@ class PrintCustomer(webapp2.RequestHandler):
 
         if len(dateref) > 0:
             try:
-                if dateref == "from_cron":
-                    # Customer Usage day -4 from February 2018
-                    today = date.today()
-                    today_4 = today - timedelta(days=4)
-                    dateref = today_4.strftime("%Y-%m-%d")
-
+                dateref = get_dateref_or_from_cron(dateref)
                 dDate = dateref
             except ValueError:
                 logging.error("Wrong updating date = {dateref}".format(dateref=dateref))

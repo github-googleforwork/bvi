@@ -21,7 +21,8 @@ import logging
 import webapp2
 
 from google.appengine.api import taskqueue
-from datetime import date, timedelta
+from datetime import date
+from main import get_dateref_or_from_cron
 
 import yaml
 with open("config.yaml", 'r') as ymlfile:
@@ -35,11 +36,7 @@ class EmailSender(webapp2.RequestHandler):
         dateref = self.request.get('dateref', 'from_cron')
         today = date.today()
         try:
-            if dateref == 'from_cron':
-                # [today - 4]
-                today_4 = today - timedelta(days=4)
-                dateref = today_4.strftime('%Y-%m-%d')
-
+            dateref = get_dateref_or_from_cron(dateref)
         except ValueError:
             logging.error('Wrong updating date = {}'.format(dateref))
             self.response.write('Wrong updating date = {}'.format(dateref))

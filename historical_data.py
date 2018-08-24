@@ -84,6 +84,8 @@ class CreateHistoricalData(webapp2.RequestHandler):
                 url_report = '/customer?date=' + dDate
             elif report_type == 'user':
                 url_report = '/user_usage?date=' + dDate
+            elif report_type == 'users_list':
+                url_report = '/user?date=' + dDate
 
             logging.info(url_report)
 

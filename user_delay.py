@@ -36,10 +36,9 @@ with open("config.yaml", 'r') as ymlfile:
 
 class PartitionPrintUsers(webapp2.RequestHandler):
     def get(self):
-        # User List today
-        today = date.today()
-        dDate = today.strftime("%Y-%m-%d")
+
         pages = 0
+        dDate = self.request.get('date')
         page_token = self.request.get('token')
         domain = self.request.get('domain')
         maxPages = self.request.get('maxPages')
@@ -67,7 +66,8 @@ class PartitionPrintUsers(webapp2.RequestHandler):
 
             if pages >= maxPages:
                 taskqueue.add(queue_name=queue_name[qA], name='ud' + dDate + '_' + aNumber,
-                              url='/user_delay?token=' + pages_token + '&maxPages=' + str(maxPages), method='GET')
+                              url='/user_delay?token=' + pages_token + '&date=' + dDate
+                                  + '&maxPages=' + str(maxPages), method='GET')
                 break
 
         logging.info('User list pages for {} - {} / finally {} pages '.format(dDate, domain, pages))

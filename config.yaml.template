@@ -2,7 +2,7 @@ version: version-4-mv01
 
 task_management:
   max_pages: MAX_NUMBER_PAGES_Recommended_200
-  page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_500
+  page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_50
   page_size_user_usage: MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50
 
 queues:

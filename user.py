@@ -36,19 +36,17 @@ with open("config.yaml", 'r') as ymlfile:
 
 class PrintUsers(webapp2.RequestHandler):
     def get(self):
-        # User List today
-        today = date.today()
-        dDate = today.strftime("%Y-%m-%d")
+        dateref = self.request.get('date', date.today().strftime("%Y-%m-%d"))
 
         if cfg['plan'] == 'Enterprise':
-            bvi_log(date=dDate, resource='exec', message_id='start', message='Start of BVI daily execution')
-        bvi_log(date=dDate, resource='users_list', message_id='start', message='Start of /user call')
+            bvi_log(date=dateref, resource='exec', message_id='start', message='Start of BVI daily execution')
+        bvi_log(date=dateref, resource='users_list', message_id='start', message='Start of /user call')
 
         page_token = ''
         maxPages = cfg['task_management']['max_pages']
         queue_name = cfg['queues']['user'] + str(1)
 
-        decoratorDate = "".join(dDate.split("-"))
+        decoratorDate = "".join(dateref.split("-"))
         # delete table if it exists to avoid data duplication
         delete_table_big_query('users_list_date${decoratorDate}'.format(decoratorDate=decoratorDate))
 
@@ -61,18 +59,19 @@ class PrintUsers(webapp2.RequestHandler):
             aNumber = "{aNumber}_{aRandomNumber}".format(aNumber=aNumber, aRandomNumber=aRandomNumber)
 
             #1st page for user
-            taskqueue.add(queue_name=queue_name, name='opul' + dDate + '_' + str(maxPages) + '_' + aNumber,
-                          url='/one_page_user_list?token=&date=' + dDate + '&domain=' + domain, method='GET')
+            taskqueue.add(queue_name=queue_name, name='opul' + dateref + '_' + str(maxPages) + '_' + aNumber,
+                          url='/one_page_user_list?token=&date=' + dateref + '&domain=' + domain, method='GET')
 
             #Starts user delay with token empty for 2nd page
-            taskqueue.add(queue_name=queue_name, name='ud' + dDate + '_' + aNumber,
-                          url='/user_delay?token=' + page_token + '&domain=' + domain + '&maxPages=' + str(maxPages),
+            taskqueue.add(queue_name=queue_name, name='ud' + dateref + '_' + aNumber,
+                          url='/user_delay?token=' + page_token + '&date=' + dateref
+                              + '&domain=' + domain + '&maxPages=' + str(maxPages),
                           method='GET')
 
-        logging.info('User list main for {} - {} / max pages {}'.format(dDate, cfg['domains'], maxPages))
-        self.response.write('User list main for {} - {} / max pages {}'.format(dDate, cfg['domains'], maxPages))
+        logging.info('User list main for {} - {} / max pages {}'.format(dateref, cfg['domains'], maxPages))
+        self.response.write('User list main for {} - {} / max pages {}'.format(dateref, cfg['domains'], maxPages))
 
-        bvi_log(date=dDate, resource='users_list', message_id='end', message='end of /user call')
+        bvi_log(date=dateref, resource='users_list', message_id='end', message='end of /user call')
 
 
 application = webapp2.WSGIApplication([('/user', PrintUsers)],

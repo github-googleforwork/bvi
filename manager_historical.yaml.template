@@ -1,6 +1,10 @@
 first:
   endpoint: /historical_data?report=customer&Sdate=start_date&Edate=end_date
   queues: metricsqs
+  next_step: user
+user:
+  endpoint: /historical_data?report=users_list&Sdate=start_date&Edate=end_date
+  queues: userq1,userq2,userq3
   next_step: user_usage
 user_usage:
   endpoint: /historical_data?report=user&Sdate=start_date&Edate=end_date

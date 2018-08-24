@@ -1,4 +1,8 @@
 first:
+  endpoint: /historical_data?report=users_list&Sdate=start_date&Edate=end_date
+  queues: userq1,userq2,userq3
+  next_step: bqUpdate1
+bqUpdate1:
   endpoint: /historical_update?Level=1&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel1
   next_step: bqUpdate2

@@ -30,6 +30,8 @@
 # list_datasets
 # poll_job
 
+
+import yaml
 import logging
 import webapp2
 import random
@@ -38,31 +40,30 @@ import time
 import uuid
 import datetime
 
-from main import createBigQueryService
+from bigquery_custom_schemas_cfg import setup as bigquery_custom_schemas_setup
+from main import createBigQueryService, get_dateref_or_from_cron
 from googleapiclient.errors import HttpError as gHttpError
 from six.moves.urllib.error import HTTPError
 from httplib import HTTPException
 from pprint import pprint, pformat
 from google.appengine.api import taskqueue
 from bvi_logger import bvi_log
+from bigquery_survey_cfg import setup as bigquery_survey_setup
+from bigquery_logs_cfg import setup as bigquery_logs_setup
+from bigquery_billing_cfg import setup as bigquery_billing_setup
 
 from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(60)
-
-import yaml
+urlfetch.set_default_fetch_deadline(600)
 
 with open("config.yaml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
-from bigquery_survey_cfg import setup as bigquery_survey_setup
-from bigquery_logs_cfg import setup as bigquery_logs_setup
-from bigquery_billing_cfg import setup as bigquery_billing_setup
-if (cfg['plan'] == 'Enterprise'):
+if cfg['plan'] == 'Enterprise':
     from bigquery_cfg_esku import setup as bigquery_setup
 else:
     from bigquery_cfg import setup as bigquery_setup
 
-from bigquery_custom_schemas_cfg import setup as bigquery_custom_schemas_setup
+
 
 # [START async_query]
 # Changed WRITE_APPEND with WRITE_TRUNCATE on 170613 to empty table partition while update
@@ -280,12 +281,12 @@ def create_view(
 
 def do_create_table(self, bigquery, table_def):
     try:
-        if exists_table_or_view(
+        if not exists_table_or_view(
                 bigquery,
                 cfg['ids']['project_id'],
                 destination_dataset=table_def['dataset'],
                 destination_table=table_def['name'],
-                num_retries=5) == False:
+                num_retries=5):
             try:
                 create_empty_table(
                     bigquery,
@@ -306,10 +307,10 @@ def do_create_table(self, bigquery, table_def):
                 self.response.write(salida)
                 self.response.write("<hr/>")
             except gHttpError as err:
-                logging.error("Cant create {table}".format(table=destination_table))
+                logging.error("Cant create {table}".format(table=table_def['name']))
                 return
             except HTTPError as err:
-                logging.error("Cant create {table}".format(table=destination_table))
+                logging.error("Cant create {table}".format(table=table_def['name']))
                 return
         else:
             salida = "<b>{destination_dataset}.{destination_table}</b> already exists <br><hr/>".format(
@@ -320,6 +321,7 @@ def do_create_table(self, bigquery, table_def):
 
     except HTTPError as err:
         logging.error('Error in get: %s' % err.content)
+
 
 def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_view=False, overwrite=False, timestamp=None, decoratorDate=None):
 
@@ -334,7 +336,8 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
     query_fp = open('{folder}/{dataset}/{name}.sql'.format(folder=folder, dataset=view_dataset, name=view_name), 'r')
     query_string = query_fp.read()
     query_string = query_string.replace("YOUR_PROJECT_ID", cfg['ids']['project_id'])
-    query_string = query_string.replace("EXPORT_DATASET", cfg['export_dataset'])
+    if cfg['export_dataset']:
+        query_string = query_string.replace("EXPORT_DATASET", cfg['export_dataset'])
     query_string = query_string.replace("YOUR_DOMAINS", domains_str)
 
     query_string = query_string.replace("YOUR_TIMESTAMP_PARAMETER", timestamp)
@@ -397,10 +400,10 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                     self.response.write("<hr/>")
 
                 except gHttpError as err:
-                    logging.error("Cant create {view}".format(view=destination_table))
+                    logging.error("Cant create {view}".format(view=view_name))
                     return
                 except HTTPError as err:
-                    logging.error("Cant create {view}".format(view=destination_table))
+                    logging.error("Cant create {view}".format(view=view_name))
                     return
         else:
             salida = "<b>{destination_dataset}.{destination_table}</b> already exists <br><hr/>".format(
@@ -429,6 +432,7 @@ def exists_dataset(
             raise err
         return False
 
+
 def exists_table_or_view(
     bigquery, project_id,
     destination_dataset, destination_table,
@@ -445,6 +449,7 @@ def exists_table_or_view(
         if err.resp.stats != 404:
             raise err
         return False
+
 
 # [START list_datasets]
 def list_datasets(bigquery, project=None):
@@ -549,6 +554,7 @@ def create_tables_from_list(self, bigquery, folder, tables_list, op):
                 digits=digits, tables=", ".join(tables_set))
             self.response.write(salida)
 
+
 def update_data_level(self, bigquery, op, bigquery_setup):
 
     level = self.request.get('level')
@@ -557,11 +563,7 @@ def update_data_level(self, bigquery, op, bigquery_setup):
     logging.info("update {} {} {}".format(level, target, dateref))
 
     try:
-        if dateref == "from_cron":
-            today = datetime.date.today()
-            today_4 = today - datetime.timedelta(days=4)
-            dateref = today_4.strftime("%Y-%m-%d")
-
+        dateref = get_dateref_or_from_cron(dateref)
         yyyy, mm, dd = dateref.split("-")
         timestamp = datetime.datetime(int(yyyy), int(mm), int(dd))
     except ValueError:
@@ -667,11 +669,11 @@ class PrintBigQuery(webapp2.RequestHandler):
             for dataset_def in bigquery_setup['datasets']:
                 try:
                     destination_dataset = dataset_def['name']
-                    if exists_dataset(
+                    if not exists_dataset(
                             bigquery,
                             cfg['ids']['project_id'],
                             destination_dataset=destination_dataset,
-                            num_retries=5) == False:
+                            num_retries=5):
                         try:
                             create_dataset(
                                 bigquery,

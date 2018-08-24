@@ -26,9 +26,9 @@ import logging
 import webapp2
 import random
 import sys
-from datetime import date, timedelta, datetime
+from datetime import datetime
 from google.appengine.api import taskqueue
-from main import returnUserUsageToken, delete_table_big_query
+from main import returnUserUsageToken, delete_table_big_query, get_dateref_or_from_cron
 from bvi_logger import bvi_log
 
 import yaml
@@ -44,11 +44,7 @@ class PrintUserUsage(webapp2.RequestHandler):
         dateref = self.request.get('date', "from_cron")
         if len(dateref) > 0:
             try:
-                if dateref == "from_cron":
-                    # Customer Usage day -4 from February 2018
-                    today = date.today()
-                    today_4 = today - timedelta(days=4)
-                    dateref = today_4.strftime("%Y-%m-%d")
+                dateref = get_dateref_or_from_cron(dateref)
 
             except ValueError:
                 logging.error("Wrong updating date = {dateref}".format(dateref=dateref))

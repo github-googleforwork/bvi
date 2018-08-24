@@ -38,7 +38,7 @@ from google.appengine.api.urlfetch_errors import DeadlineExceededError
 from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
 import hashlib
-from datetime import date
+from datetime import date, timedelta
 from google.appengine.api import urlfetch
 from bvi_logger import bvi_log
 
@@ -54,7 +54,7 @@ if cfg['plan'] == 'Business':
     maxResultsPage_UserUsage = cfg['task_management']['page_size_user_usage']
 
 #Added to avoid DeadlineExceededError: Deadline exceeded while waiting for HTTP response from URL:
-urlfetch.set_default_fetch_deadline(60)
+urlfetch.set_default_fetch_deadline(600)
 
 # Create Report Object
 # Parameters:
@@ -684,6 +684,13 @@ def returnActivitiesPageToken(token, appName, dDay, SAJson, SADelegated):
         bvi_log(date=dDay, resource='activities', message_id='activities_api', message=err, regenerate=True)
     logging.info("We have {} activities rows in the end".format(len(activities)))
     yield activities
+
+
+def get_dateref_or_from_cron(dateref):
+    if dateref == "from_cron":
+        report_date = date.today() - timedelta(days=4)
+        dateref = report_date.strftime("%Y-%m-%d")
+    return dateref
 
 class PrintMain(webapp2.RequestHandler):
     def get(self):

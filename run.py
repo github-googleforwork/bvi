@@ -18,7 +18,7 @@
 import logging
 import webapp2
 from google.appengine.api import taskqueue
-from datetime import date, timedelta
+from main import get_dateref_or_from_cron
 
 import yaml
 
@@ -35,12 +35,7 @@ class Run(webapp2.RequestHandler):
         end_date = self.request.get('Edate')
         if exec_type == 'daily' and len(dateref) > 0:
             try:
-                if dateref == 'from_cron':
-                    # [today - 4]
-                    today = date.today()
-                    today_4 = today - timedelta(days=4)
-                    dateref = today_4.strftime('%Y-%m-%d')
-
+                dateref = get_dateref_or_from_cron(dateref)
             except ValueError:
                 logging.error('Wrong updating date = {}'.format(dateref))
                 self.response.write('Wrong updating date = {}'.format(dateref))
