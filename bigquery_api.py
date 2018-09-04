@@ -30,6 +30,8 @@
 # list_datasets
 # poll_job
 
+
+import yaml
 import logging
 import webapp2
 import random
@@ -38,6 +40,7 @@ import time
 import uuid
 import datetime
 
+from bigquery_custom_schemas_cfg import setup as bigquery_custom_schemas_setup
 from main import createBigQueryService
 from googleapiclient.errors import HttpError as gHttpError
 from six.moves.urllib.error import HTTPError
@@ -45,24 +48,22 @@ from httplib import HTTPException
 from pprint import pprint, pformat
 from google.appengine.api import taskqueue
 from bvi_logger import bvi_log
+from bigquery_survey_cfg import setup as bigquery_survey_setup
+from bigquery_logs_cfg import setup as bigquery_logs_setup
+from bigquery_billing_cfg import setup as bigquery_billing_setup
 
 from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(60)
-
-import yaml
+urlfetch.set_default_fetch_deadline(600)
 
 with open("config.yaml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
-from bigquery_survey_cfg import setup as bigquery_survey_setup
-from bigquery_logs_cfg import setup as bigquery_logs_setup
-from bigquery_billing_cfg import setup as bigquery_billing_setup
-if (cfg['plan'] == 'Enterprise'):
+if cfg['plan'] == 'Enterprise':
     from bigquery_cfg_esku import setup as bigquery_setup
 else:
     from bigquery_cfg import setup as bigquery_setup
 
-from bigquery_custom_schemas_cfg import setup as bigquery_custom_schemas_setup
+
 
 # [START async_query]
 # Changed WRITE_APPEND with WRITE_TRUNCATE on 170613 to empty table partition while update
@@ -120,7 +121,7 @@ def fetch_big_query_table_info(bigquery, project_id, dataset_id, table_id):
 def fetch_big_query_data(bigquery, project_id, query, num_attempts):
 
     query_body = {
-        "timeoutMs": 3500,
+        "timeoutMs": 180000,
         "useQueryCache": False,
         "query": query
     }
@@ -139,7 +140,7 @@ def fetch_big_query_data(bigquery, project_id, query, num_attempts):
         result = bigquery.jobs().getQueryResults(
             projectId=project_id,
             jobId=job_id,
-            timeoutMs=3500).execute()
+            timeoutMs=180000).execute()
 
         job_finished = bool(result['jobComplete'])
 
@@ -245,7 +246,7 @@ def create_empty_table(
 def create_view(
     bigquery, project_id, query,
     destination_dataset, destination_table,
-    num_retries=5,use_legacy_sql=True):
+    num_retries=5,use_legacy_sql=True, overwrite=False):
 
     try:
         view_data = {
@@ -264,6 +265,10 @@ def create_view(
         while retried < num_retries:
             try:
                 retried += 1
+                if overwrite:
+                    bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
+                                             tableId=destination_table).execute(num_retries=num_retries)
+
                 return bigquery.tables().insert(
                     projectId=project_id, datasetId=destination_dataset,
                     body=view_data).execute(num_retries=num_retries)
@@ -280,12 +285,12 @@ def create_view(
 
 def do_create_table(self, bigquery, table_def):
     try:
-        if exists_table_or_view(
+        if not exists_table_or_view(
                 bigquery,
                 cfg['ids']['project_id'],
                 destination_dataset=table_def['dataset'],
                 destination_table=table_def['name'],
-                num_retries=5) == False:
+                num_retries=5):
             try:
                 create_empty_table(
                     bigquery,
@@ -306,10 +311,10 @@ def do_create_table(self, bigquery, table_def):
                 self.response.write(salida)
                 self.response.write("<hr/>")
             except gHttpError as err:
-                logging.error("Cant create {table}".format(table=destination_table))
+                logging.error("Cant create {table}".format(table=table_def['name']))
                 return
             except HTTPError as err:
-                logging.error("Cant create {table}".format(table=destination_table))
+                logging.error("Cant create {table}".format(table=table_def['name']))
                 return
         else:
             salida = "<b>{destination_dataset}.{destination_table}</b> already exists <br><hr/>".format(
@@ -320,6 +325,7 @@ def do_create_table(self, bigquery, table_def):
 
     except HTTPError as err:
         logging.error('Error in get: %s' % err.content)
+
 
 def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_view=False, overwrite=False, timestamp=None, decoratorDate=None):
 
@@ -382,7 +388,8 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                         destination_dataset=view_dataset,
                         destination_table=view_name,
                         num_retries=5,
-                        use_legacy_sql=True)
+                        use_legacy_sql=True,
+                        overwrite=overwrite)
                     if overwrite:
                         operation = "updated"
                     else:
@@ -396,10 +403,10 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                     self.response.write("<hr/>")
 
                 except gHttpError as err:
-                    logging.error("Cant create {view}".format(view=destination_table))
+                    logging.error("Cant create {view}".format(view=view_name))
                     return
                 except HTTPError as err:
-                    logging.error("Cant create {view}".format(view=destination_table))
+                    logging.error("Cant create {view}".format(view=view_name))
                     return
         else:
             salida = "<b>{destination_dataset}.{destination_table}</b> already exists <br><hr/>".format(
@@ -428,6 +435,7 @@ def exists_dataset(
             raise err
         return False
 
+
 def exists_table_or_view(
     bigquery, project_id,
     destination_dataset, destination_table,
@@ -444,6 +452,7 @@ def exists_table_or_view(
         if err.resp.stats != 404:
             raise err
         return False
+
 
 # [START list_datasets]
 def list_datasets(bigquery, project=None):
@@ -547,6 +556,50 @@ def create_tables_from_list(self, bigquery, folder, tables_list, op):
                 base="/bq_api", op=op, start=start, end=end, start_plusone=start + 1, end_plusone=end + 1,
                 digits=digits, tables=", ".join(tables_set))
             self.response.write(salida)
+
+
+
+def recreate_views(self, bigquery, folder, tables_list, op):
+    start = self.request.get('start')
+    end = self.request.get('end')
+    views_list = [x for x in tables_list if x['type'] == 'view']
+
+    if len(start) > 0 and len(end) > 0 and type(int(start)) is int and type(int(end)) is int:
+        logging.info("Recreating views between {start} and {end}".format(start=start, end=end))
+        digits = len(str(len(views_list)))
+        for index, view_def in enumerate(views_list):
+            if int(start) <= index <= int(end):
+                logging.info("Creating table {index:0{digits}}: {name}".format(digits=digits, index=index,
+                                                                               name=view_def['name']))
+                do_create_view(self, bigquery, folder, view_def['dataset'], view_def['name'], False, True)
+
+    else:
+        digits = len(str(len(views_list)))
+        views_set = []
+        end = 0
+        amount = 5
+        self.response.write("There are {} views available<br/><hr/>".format(len(views_list)))
+        for index, view_def in enumerate(views_list):
+            views_set.append("{dataset}.{name}".format(dataset=view_def.get('dataset'), name=view_def.get('name')))
+            if (index + 1) % amount == 0:
+                start = index + 1 - amount
+                end = index
+                salida = "<a href='{base}?op={op}&start={start}&end={end}' target='_blank'>{start_plusone:0{digits}}-{end_plusone:0{digits}}</a> ({tables})<br/>".format(
+                    base="/bq_api", op=op, start=start, end=end, start_plusone=start + 1,
+                    end_plusone=end + 1, digits=digits, tables=", ".join(views_set))
+                self.response.write(salida)
+                views_set = []
+
+        number_views = len(views_list)
+
+        if number_views % amount > 0:
+            start = end + 1 if number_views > amount else 0
+            end = len(views_list) - 1 if number_views > amount else number_views
+            salida = "<a href='{base}?op={op}&start={start}&end={end}' target='_blank'>{start_plusone:0{digits}}-{end_plusone:0{digits}}</a> ({tables})<br/>".format(
+                base="/bq_api", op=op, start=start, end=end, start_plusone=start + 1, end_plusone=end + 1,
+                digits=digits, tables=", ".join(views_set))
+            self.response.write(salida)
+
 
 def update_data_level(self, bigquery, op, bigquery_setup):
 
@@ -666,11 +719,11 @@ class PrintBigQuery(webapp2.RequestHandler):
             for dataset_def in bigquery_setup['datasets']:
                 try:
                     destination_dataset = dataset_def['name']
-                    if exists_dataset(
+                    if not exists_dataset(
                             bigquery,
                             cfg['ids']['project_id'],
                             destination_dataset=destination_dataset,
-                            num_retries=5) == False:
+                            num_retries=5):
                         try:
                             create_dataset(
                                 bigquery,
@@ -717,6 +770,10 @@ class PrintBigQuery(webapp2.RequestHandler):
             create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_logs_setup['folder'],
                                     tables_list=bigquery_billing_setup['tables'], op=op)
 
+        elif op == "recreate_views":
+            recreate_views(self=self, bigquery=bigquery, folder=bigquery_setup['folder'],
+                                    tables_list=bigquery_setup['tables'], op=op)
+
         elif op == "update":
             update_data_level(self, bigquery, 'update', bigquery_setup)
         elif op == "custom_update":
@@ -733,6 +790,7 @@ class PrintBigQuery(webapp2.RequestHandler):
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_custom_schemas"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_logs_tables"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_billing_view"),
+                "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="recreate_views"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="update"),
             ]
 

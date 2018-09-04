@@ -29,11 +29,8 @@ FROM
       (stats.gmail_30da) AS gmail_30_day_active,
       (stats.gplus_30da) AS gplus_30_day_active,
       (stats.calendar_30da) AS calendar_30_day_active,
-     --Not a source of truth
-     --(stats.num_docs_customer) AS total_num_docs,
     FROM [YOUR_PROJECT_ID:adoption.customer_usage_date_summary] stats
     WHERE TRUE
-  --    AND TIMESTAMP(date) > DATE_ADD(CURRENT_DATE(),-30,"DAY")
       AND _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     ORDER BY
   1 ASC ) customer_usage

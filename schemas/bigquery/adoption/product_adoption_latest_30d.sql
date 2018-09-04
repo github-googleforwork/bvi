@@ -48,10 +48,10 @@ FROM (
       events.parameters.value AS product,
       INTEGER(COUNT(*)) AS event
     FROM
-      [YOUR_PROJECT_ID::raw_data.audit_log] AS audit
+      [YOUR_PROJECT_ID:raw_data.audit_log] AS audit
     WHERE
       TRUE
-      AND _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      AND _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
       AND id.applicationName = 'drive'
       AND events.type IS NOT NULL
       AND events.parameters.name = 'doc_type'
@@ -62,10 +62,10 @@ FROM (
       email,
       IFNULL(ou, 'NA') AS ou
     FROM
-      [YOUR_PROJECT_ID::users.users_ou_list]
+      [YOUR_PROJECT_ID:users.users_ou_list]
     WHERE
       TRUE
-      AND _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      AND _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
     GROUP BY 1,2) users
   ON
     users.email = adoption.data_email
@@ -74,9 +74,9 @@ LEFT JOIN
   email,
   EXACT_COUNT_DISTINCT(email) as users_adopting_drive
 FROM
-  [YOUR_PROJECT_ID::adoption.audit_log_drive_adoption_per_day]
+  [YOUR_PROJECT_ID:adoption.audit_log_drive_adoption_per_day]
 WHERE
-_PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+_PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
 GROUP BY 1) drive
 ON
   users.email = drive.email
@@ -85,9 +85,9 @@ ON
     SELECT
       ou, COUNT((email)) as count
     FROM
-      [YOUR_PROJECT_ID::users.active_users_with_ou_per_day]
+      [YOUR_PROJECT_ID:users.active_users_with_ou_per_day]
     WHERE
-      _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
     GROUP BY 1
   ) active_users
 ON

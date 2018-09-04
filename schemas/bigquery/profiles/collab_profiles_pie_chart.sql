@@ -2,7 +2,7 @@
 -- Review: 28/02/2017
 -- Propose to be deteled 
 SELECT
-  CURRENT_DATE() AS date,
+  DATE(DATE_ADD(CURRENT_DATE(),-4,"DAY")) AS date,
   type,
   INTEGER(number) AS count,
   number2 as P_count
@@ -14,7 +14,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) readers_data,
   (
   SELECT
@@ -24,7 +24,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_readers_data,
     (
   SELECT
@@ -34,7 +34,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) creators_data,
     (
   SELECT
@@ -44,7 +44,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_creators_data,
     (
   SELECT
@@ -54,7 +54,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) collaborators_data,
     (
   SELECT
@@ -64,7 +64,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_collaborators_data,
     (
   SELECT
@@ -74,7 +74,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) sharers_data,
     (
   SELECT
@@ -84,7 +84,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_sharers_data,
     (
   SELECT
@@ -94,7 +94,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) any_data,
     (
   SELECT
@@ -104,7 +104,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_any_data,
   (
   SELECT
@@ -114,7 +114,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) idles_data,
   (
   SELECT
@@ -124,5 +124,5 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:profiles.collab_profiles] profiles
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) non_idles_data

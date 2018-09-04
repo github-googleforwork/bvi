@@ -13,4 +13,4 @@ SELECT
 FROM
   [YOUR_PROJECT_ID:adoption.gplus_adoption_daily],
 WHERE
-  date = DATE(DATE_ADD(TIMESTAMP(CURRENT_DATE()), -4, "DAY"))
+  date = (SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day])

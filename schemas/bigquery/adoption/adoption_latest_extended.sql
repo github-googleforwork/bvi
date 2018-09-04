@@ -41,6 +41,6 @@ SELECT
 FROM
   [YOUR_PROJECT_ID:adoption.customer_usage_date_summary_extended]
 WHERE
-  _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-10,"DAY")
+  _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-7,"DAY")
 ORDER BY 1 DESC
 LIMIT 1
