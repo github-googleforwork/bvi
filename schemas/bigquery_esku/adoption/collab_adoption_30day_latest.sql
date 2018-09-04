@@ -35,7 +35,7 @@ FROM (
     FROM
       [YOUR_PROJECT_ID:adoption.collab_adoption_30day]
     WHERE
-      _PARTITIONTIME = DATE_ADD(CURRENT_DATE(),-4,"day")) profiles
+      _PARTITIONTIME = TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]))) profiles
   JOIN
     [YOUR_PROJECT_ID:adoption.adoption_30day] adoption
   ON

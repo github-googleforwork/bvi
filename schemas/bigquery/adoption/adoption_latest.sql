@@ -33,7 +33,7 @@ INNER JOIN
 ON
   customer_usage.date = drive_adoption.date
 WHERE
-  active_users._PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-20,"DAY")
+  active_users._PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
 GROUP BY
   1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 ORDER BY 1 DESC

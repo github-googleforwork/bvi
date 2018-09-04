@@ -51,8 +51,9 @@ FROM (
       [YOUR_PROJECT_ID:Reports.activity] AS audit
     WHERE
       TRUE
-      AND _PARTITIONTIME >= DATE_ADD(CURRENT_DATE(), -31, "DAY")
-      AND TIMESTAMP(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) >= DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      AND _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]), -30, "DAY")
+      AND TIMESTAMP(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
+      AND TIMESTAMP(STRFTIME_UTC_USEC(time_usec,"%Y-%m-%d")) <= TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]))
       AND record_type  = 'drive'
       AND event_type IS NOT NULL
       GROUP BY 1,2) data
@@ -65,7 +66,7 @@ FROM (
       [YOUR_PROJECT_ID:users.users_ou_list]
     WHERE
       TRUE
-      AND _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      AND _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
     GROUP BY 1,2) users
   ON
     users.email = adoption.data_email
@@ -76,7 +77,7 @@ LEFT JOIN
 FROM
   [YOUR_PROJECT_ID:adoption.audit_log_drive_adoption_per_day]
 WHERE
-_PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+  _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
 GROUP BY 1) drive
 ON
   users.email = drive.email
@@ -87,7 +88,7 @@ ON
     FROM
       [YOUR_PROJECT_ID:users.active_users_with_ou_per_day]
     WHERE
-      _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+      _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
     GROUP BY 1
   ) active_users
 ON

@@ -19,4 +19,4 @@ LEFT JOIN
 ON
   profiles_any_per_ou_last_N_days.email = custom.email
 WHERE
-  profiles_any_per_ou_last_N_days._PARTITIONTIME = DATE_ADD(CURRENT_DATE(),-4,"DAY")
+  profiles_any_per_ou_last_N_days._PARTITIONTIME = TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]))

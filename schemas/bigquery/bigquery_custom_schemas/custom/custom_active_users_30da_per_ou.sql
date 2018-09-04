@@ -16,5 +16,5 @@ LEFT JOIN
 ON
   active_users.email = custom.email
 WHERE
-  active_users._PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-34,"DAY")
+  active_users._PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
 GROUP BY  2,  3,  4,  5
