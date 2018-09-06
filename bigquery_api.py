@@ -266,8 +266,11 @@ def create_view(
             try:
                 retried += 1
                 if overwrite:
-                    bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
+                    try:
+                        bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
                                              tableId=destination_table).execute(num_retries=num_retries)
+                    except Exception as err:
+                        logging.info('Not needed to delete view, it does not exist: %s', destination_table)
 
                 return bigquery.tables().insert(
                     projectId=project_id, datasetId=destination_dataset,
@@ -577,7 +580,7 @@ def recreate_views(self, bigquery, folder, tables_list, op):
         digits = len(str(len(views_list)))
         views_set = []
         end = 0
-        amount = 4
+        amount = 5
         self.response.write("There are {} views available<br/><hr/>".format(len(views_list)))
         for index, view_def in enumerate(views_list):
             views_set.append("{dataset}.{name}".format(dataset=view_def.get('dataset'), name=view_def.get('name')))
