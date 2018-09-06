@@ -268,6 +268,7 @@ def create_view(
                 if overwrite:
                     bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
                                              tableId=destination_table).execute(num_retries=num_retries)
+                    time.sleep(3)
 
                 return bigquery.tables().insert(
                     projectId=project_id, datasetId=destination_dataset,
