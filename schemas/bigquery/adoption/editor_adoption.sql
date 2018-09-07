@@ -7,4 +7,4 @@ SELECT
 FROM
   [YOUR_PROJECT_ID:adoption.editor_adoption_per_day_per_ou]
 WHERE
-  _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+  _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")

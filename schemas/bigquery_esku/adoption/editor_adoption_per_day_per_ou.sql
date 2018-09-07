@@ -51,7 +51,7 @@ LEFT JOIN (
           WHERE
             TRUE
             AND users_ou_list._PARTITIONTIME > DATE_ADD(YOUR_TIMESTAMP_PARAMETER,-10,"DAY")
-            AND users_ou_list._PARTITIONTIME <= DATE_ADD(CURRENT_DATE(),-4,"DAY")
+            AND users_ou_list._PARTITIONTIME <= TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]))
           GROUP BY
             1,
             2) users

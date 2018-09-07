@@ -1,7 +1,7 @@
 -- content_latest_30d (view)
 -- Review: 06/04/2017
 SELECT
-  CURRENT_DATE() AS date,
+  DATE(DATE_ADD(CURRENT_DATE(),-4,"DAY")) AS date,
   IFNULL(ou, 'NA') AS ou,
   SUM( active_users) AS active_users,
   SUM( readers ) AS readers,
@@ -16,5 +16,5 @@ SELECT
 FROM
   [YOUR_PROJECT_ID:adoption.google_drive_adoption_stats_per_day_per_ou]
 WHERE
-  _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+  _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
 GROUP BY 1, 2

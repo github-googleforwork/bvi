@@ -34,4 +34,4 @@ FROM
   [YOUR_PROJECT_ID:adoption.meetings_adoption_daily]) latest_meeting_adoption
   ON latest_adoption.date = latest_meeting_adoption.date
 WHERE
-  latest_adoption.date = DATE(DATE_ADD(TIMESTAMP(CURRENT_DATE()), -4, "DAY"))
+  latest_adoption.date = (SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day])

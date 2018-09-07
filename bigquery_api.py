@@ -121,7 +121,7 @@ def fetch_big_query_table_info(bigquery, project_id, dataset_id, table_id):
 def fetch_big_query_data(bigquery, project_id, query, num_attempts):
 
     query_body = {
-        "timeoutMs": 3500,
+        "timeoutMs": 180000,
         "useQueryCache": False,
         "query": query
     }
@@ -140,7 +140,7 @@ def fetch_big_query_data(bigquery, project_id, query, num_attempts):
         result = bigquery.jobs().getQueryResults(
             projectId=project_id,
             jobId=job_id,
-            timeoutMs=3500).execute()
+            timeoutMs=180000).execute()
 
         job_finished = bool(result['jobComplete'])
 
@@ -246,7 +246,7 @@ def create_empty_table(
 def create_view(
     bigquery, project_id, query,
     destination_dataset, destination_table,
-    num_retries=5,use_legacy_sql=True):
+    num_retries=5,use_legacy_sql=True, overwrite=False):
 
     try:
         view_data = {
@@ -265,6 +265,13 @@ def create_view(
         while retried < num_retries:
             try:
                 retried += 1
+                if overwrite:
+                    try:
+                        bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
+                                             tableId=destination_table).execute(num_retries=num_retries)
+                    except Exception as err:
+                        logging.info('Not needed to delete view, it does not exist: %s', destination_table)
+
                 return bigquery.tables().insert(
                     projectId=project_id, datasetId=destination_dataset,
                     body=view_data).execute(num_retries=num_retries)
@@ -386,7 +393,8 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                         destination_dataset=view_dataset,
                         destination_table=view_name,
                         num_retries=5,
-                        use_legacy_sql=True)
+                        use_legacy_sql=True,
+                        overwrite=overwrite)
                     if overwrite:
                         operation = "updated"
                     else:
@@ -555,6 +563,49 @@ def create_tables_from_list(self, bigquery, folder, tables_list, op):
             self.response.write(salida)
 
 
+
+def recreate_views(self, bigquery, folder, tables_list, op):
+    start = self.request.get('start')
+    end = self.request.get('end')
+    views_list = [x for x in tables_list if x['type'] == 'view']
+
+    if len(start) > 0 and len(end) > 0 and type(int(start)) is int and type(int(end)) is int:
+        logging.info("Recreating views between {start} and {end}".format(start=start, end=end))
+        digits = len(str(len(views_list)))
+        for index, view_def in enumerate(views_list):
+            if int(start) <= index <= int(end):
+                logging.info("Recreating view {index:0{digits}}: {name}".format(digits=digits, index=index,
+                                                                               name=view_def['name']))
+                do_create_view(self, bigquery, folder, view_def['dataset'], view_def['name'], False, True)
+
+    else:
+        digits = len(str(len(views_list)))
+        views_set = []
+        end = 0
+        amount = 5
+        self.response.write("There are {} views available<br/><hr/>".format(len(views_list)))
+        for index, view_def in enumerate(views_list):
+            views_set.append("{dataset}.{name}".format(dataset=view_def.get('dataset'), name=view_def.get('name')))
+            if (index + 1) % amount == 0:
+                start = index + 1 - amount
+                end = index
+                salida = "<a href='{base}?op={op}&start={start}&end={end}' target='_blank'>{start_plusone:0{digits}}-{end_plusone:0{digits}}</a> ({tables})<br/>".format(
+                    base="/bq_api", op=op, start=start, end=end, start_plusone=start + 1,
+                    end_plusone=end + 1, digits=digits, tables=", ".join(views_set))
+                self.response.write(salida)
+                views_set = []
+
+        number_views = len(views_list)
+
+        if number_views % amount > 0:
+            start = end + 1 if number_views > amount else 0
+            end = len(views_list) - 1 if number_views > amount else number_views
+            salida = "<a href='{base}?op={op}&start={start}&end={end}' target='_blank'>{start_plusone:0{digits}}-{end_plusone:0{digits}}</a> ({tables})<br/>".format(
+                base="/bq_api", op=op, start=start, end=end, start_plusone=start + 1, end_plusone=end + 1,
+                digits=digits, tables=", ".join(views_set))
+            self.response.write(salida)
+
+
 def update_data_level(self, bigquery, op, bigquery_setup):
 
     level = self.request.get('level')
@@ -720,6 +771,10 @@ class PrintBigQuery(webapp2.RequestHandler):
             create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_logs_setup['folder'],
                                     tables_list=bigquery_billing_setup['tables'], op=op)
 
+        elif op == "recreate_views":
+            recreate_views(self=self, bigquery=bigquery, folder=bigquery_setup['folder'],
+                                    tables_list=bigquery_setup['tables'], op=op)
+
         elif op == "update":
             update_data_level(self, bigquery, 'update', bigquery_setup)
         elif op == "custom_update":
@@ -736,6 +791,7 @@ class PrintBigQuery(webapp2.RequestHandler):
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_custom_schemas"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_logs_tables"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_billing_view"),
+                "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="recreate_views"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="update"),
             ]
 

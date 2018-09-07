@@ -36,4 +36,4 @@ SELECT
   FROM
     [YOUR_PROJECT_ID:adoption.meetings_adoption_daily]
   WHERE
-    date > DATE(DATE_ADD(CURRENT_DATE(),-30,"DAY"))
+    date >= DATE(DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY"))

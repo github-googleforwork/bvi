@@ -17,7 +17,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:adoption.product_adoption_daily]
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
     AND (document) > 0
   GROUP BY 1) adoption
 INNER JOIN (
@@ -29,7 +29,7 @@ INNER JOIN (
   FROM
     [YOUR_PROJECT_ID:adoption.drive_adoption_per_day_per_ou]
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY 1) drive
 ON
   adoption.ou = drive.ou
@@ -40,7 +40,7 @@ INNER JOIN (
   FROM
     [YOUR_PROJECT_ID:users.active_users_with_ou_per_day]
   WHERE
-    _PARTITIONTIME > DATE_ADD(CURRENT_DATE(),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]),-30,"DAY")
   GROUP BY
     1 ) users
 ON

@@ -9,4 +9,4 @@ SELECT date, device, time_spent_call FROM
 (SELECT date as date, 'Web' AS device, total_call_minutes_web AS time_spent_call FROM [YOUR_PROJECT_ID:adoption.meetings_adoption_daily]),
 (SELECT date as date, 'Jamboard' AS device, total_call_minutes_jamboard AS time_spent_call FROM [YOUR_PROJECT_ID:adoption.meetings_adoption_daily]),
 (SELECT date as date, 'Unknown' AS device, total_call_minutes_unknown_client  AS time_spent_call FROM [YOUR_PROJECT_ID:adoption.meetings_adoption_daily])
-WHERE date > DATE(DATE_ADD(TIMESTAMP(CURRENT_DATE()), -30, "DAY"))
+WHERE date >= DATE(DATE_ADD((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day]), -30, "DAY"))
