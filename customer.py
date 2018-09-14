@@ -49,9 +49,6 @@ class PrintCustomer(webapp2.RequestHandler):
                 return
 
         try:
-            bvi_log(date=dDate, resource='exec', message_id='start', message='Start of BVI daily execution')
-            bvi_log(date=dDate, resource='customer_usage', message_id='start', message='Start of /customer call')
-
             decoratorDate = "".join(dDate.split("-"))
             table_name = 'customer_usage${decoratorDate}'.format(decoratorDate=decoratorDate)
 
@@ -72,8 +69,6 @@ class PrintCustomer(webapp2.RequestHandler):
             logging.error(err)
             self.response.write('Customer Usage for ' + dDate + ' - ' + cfg['domains'] + ': ERROR')
             raise err
-
-        bvi_log(date=dDate, resource='customer_usage', message_id='end', message='End of /customer call')
 
 
 application = webapp2.WSGIApplication([('/customer', PrintCustomer)],

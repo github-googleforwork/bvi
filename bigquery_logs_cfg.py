@@ -15,15 +15,27 @@
 # limitations under the License.
 #
 # This file has all the needed table and view definitions used on bigquery_api file to create the BQ BIS schema.
+import yaml
+
+with open("config.yaml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
 
 setup = {}
-setup['folder'] = 'schemas'
+
+setup['folder'] = 'schemas/bigquery_esku' if cfg['plan'] == 'Enterprise' \
+    else 'schemas/bigquery'
 
 setup['tables'] = [
     {
         'name': 'raw_logs',
         'dataset': 'logs',
         'description': 'The raw log entries',
+        'type': 'view',
+    },
+    {
+        'name': 'bvi_logs',
+        'dataset': 'logs',
+        'description': 'The bvi log entries',
         'type': 'view',
     },
     {
@@ -49,5 +61,11 @@ setup['tables'] = [
         'dataset': 'logs',
         'description': 'View to provide the daily status',
         'type': 'view',
-    }
+    },
+    {
+        'name': 'errors_dashboard',
+        'dataset': 'logs',
+        'description': 'Errors Dashboard',
+        'type': 'view',
+    },
 ]

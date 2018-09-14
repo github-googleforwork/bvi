@@ -21,8 +21,8 @@ FROM (
         FIRST(SPLIT(protoPayload.resource, '?')) AS resource,
         protoPayload.line.logMessage
       FROM (TABLE_DATE_RANGE([YOUR_PROJECT_ID:logs.appengine_googleapis_com_request_log_],
-            DATE_ADD(DATE(CURRENT_TIMESTAMP()),-10,"DAY"), CURRENT_TIMESTAMP())) logs
+            DATE_ADD(DATE(CURRENT_TIMESTAMP()),-DAYS_LOOKBACK,"DAY"), CURRENT_TIMESTAMP())) logs
       WHERE
-        protoPayload.line.logMessage CONTAINS 'BVI LOG :::' ),protopayload.line ))
+        protoPayload.line.logMessage CONTAINS 'BVI LOG v4 :::' ),protopayload.line ))
 ORDER BY
   protoPayload.line.time

@@ -26,7 +26,6 @@ import sys
 from main import delete_table_big_query
 from datetime import date, datetime
 from google.appengine.api import taskqueue
-from bvi_logger import bvi_log
 
 import yaml
 
@@ -37,10 +36,6 @@ with open("config.yaml", 'r') as ymlfile:
 class PrintUsers(webapp2.RequestHandler):
     def get(self):
         dateref = self.request.get('date', date.today().strftime("%Y-%m-%d"))
-
-        if cfg['plan'] == 'Enterprise':
-            bvi_log(date=dateref, resource='exec', message_id='start', message='Start of BVI daily execution')
-        bvi_log(date=dateref, resource='users_list', message_id='start', message='Start of /user call')
 
         page_token = ''
         maxPages = cfg['task_management']['max_pages']
@@ -70,8 +65,6 @@ class PrintUsers(webapp2.RequestHandler):
 
         logging.info('User list main for {} - {} / max pages {}'.format(dateref, cfg['domains'], maxPages))
         self.response.write('User list main for {} - {} / max pages {}'.format(dateref, cfg['domains'], maxPages))
-
-        bvi_log(date=dateref, resource='users_list', message_id='end', message='end of /user call')
 
 
 application = webapp2.WSGIApplication([('/user', PrintUsers)],

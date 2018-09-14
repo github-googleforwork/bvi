@@ -29,7 +29,6 @@ import sys
 from datetime import datetime
 from google.appengine.api import taskqueue
 from main import returnActivitiesToken
-from bvi_logger import bvi_log
 
 import yaml
 
@@ -44,7 +43,6 @@ class PrintActivitiesApp(webapp2.RequestHandler):
         appName = self.request.get('app')
         dateref = self.request.get('date')
 
-        bvi_log(date=dateref, resource='activities', message_id='start_app', message='Start of /activities_app call')
         try:
             pages = 0
             page_token = self.request.get('token')
@@ -99,8 +97,6 @@ class PrintActivitiesApp(webapp2.RequestHandler):
             logging.error(err)
             self.response.write('Activities for ' + dateref + ' - ' + cfg['domains'] + ': ERROR')
             raise err
-
-        bvi_log(date=dateref, resource='activities', message_id='end_app', message='End of /activities_app call')
 
 
 application = webapp2.WSGIApplication([('/activities_app', PrintActivitiesApp)],

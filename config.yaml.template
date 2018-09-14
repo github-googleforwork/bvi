@@ -2,7 +2,7 @@ version: version-4-mv01
 
 task_management:
   max_pages: MAX_NUMBER_PAGES_Recommended_200
-  page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_50
+  page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_100
   page_size_user_usage: MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50
 
 queues:
@@ -34,6 +34,10 @@ google_sheets_link: GOOGLE_SHEETS_LINK
 custom_fields_sheets_link: CUSTOM_FIELDS_SHEETS_LINK
 
 notification_email: NOTIFICATION_EMAIL
+
+auto_rerun:
+  frequency: 7
+  days_lookback: 30
 
 scopes:
   audit_log:

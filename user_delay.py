@@ -24,9 +24,8 @@ import webapp2
 import random
 import sys
 from main import returnUsersListToken
-from datetime import date, datetime
+from datetime import datetime
 from google.appengine.api import taskqueue
-from bvi_logger import bvi_log
 
 import yaml
 
@@ -72,8 +71,6 @@ class PartitionPrintUsers(webapp2.RequestHandler):
 
         logging.info('User list pages for {} - {} / finally {} pages '.format(dDate, domain, pages))
         self.response.write("User Usage for {} - {} / {} pages".format(dDate, domain, pages))
-
-        bvi_log(date=dDate, resource='users_list', message_id='end', message='End of /user_delay call')
 
 
 application = webapp2.WSGIApplication([('/user_delay', PartitionPrintUsers)],

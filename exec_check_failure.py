@@ -70,12 +70,13 @@ class CheckFailure(webapp2.RequestHandler):
 
         logging.info('Checking the processes for [{}]'.format(dateref))
 
-        query = "SELECT report_date, status FROM logs.status_board WHERE report_date = \'" + dateref + "\'"
+        query = "SELECT report_date, status FROM logs.status_board2 WHERE report_date = \'" + dateref + "\'"
 
         result = fetch_big_query_data(bigquery, project_id, query, 10)
-        rows = convert_big_query_result(result, DAILY_STATUS)
+        if 'rows' in result:
+            rows = convert_big_query_result(result, DAILY_STATUS)
 
-        if len(rows) == 0:
+        if 'rows' not in result or len(rows) == 0:
             result = None
             logging.info("There is no result for daily status so there is nothing to do.")
         elif dateref == rows[0]['report_date'] and rows[0]['status'] == '0':

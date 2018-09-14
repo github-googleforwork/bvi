@@ -27,7 +27,6 @@ import sys
 from main import delete_table_big_query, get_dateref_or_from_cron
 from datetime import datetime
 from google.appengine.api import taskqueue
-from bvi_logger import bvi_log
 
 import yaml
 
@@ -47,8 +46,6 @@ class PrintActivities(webapp2.RequestHandler):
                 logging.error("Wrong updating date = {dateref}".format(dateref=dateref))
                 self.response.write("Wrong updating date = {}".format(dateref))
                 return
-
-        bvi_log(date=dateref, resource='activities', message_id='start', message='Start of /activities call')
 
         decoratorDate = "".join(dateref.split("-"))
         # delete table if it exists to avoid data duplication
@@ -74,6 +71,5 @@ class PrintActivities(webapp2.RequestHandler):
         logging.info('Activities for {} - {} / finally {} apps '.format(dateref, cfg['domains'], processed))
         self.response.write("Activities for {} - {} / finally {} apps".format(dateref, cfg['domains'], processed))
 
-        bvi_log(date=dateref, resource='activities', message_id='end', message='End of /activities call')
 
 application = webapp2.WSGIApplication([('/activities', PrintActivities)], debug=True)

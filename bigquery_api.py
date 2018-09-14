@@ -53,7 +53,7 @@ from bigquery_logs_cfg import setup as bigquery_logs_setup
 from bigquery_billing_cfg import setup as bigquery_billing_setup
 
 from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(600)
+urlfetch.set_default_fetch_deadline(60)
 
 with open("config.yaml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
@@ -343,8 +343,10 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
     query_fp = open('{folder}/{dataset}/{name}.sql'.format(folder=folder, dataset=view_dataset, name=view_name), 'r')
     query_string = query_fp.read()
     query_string = query_string.replace("YOUR_PROJECT_ID", cfg['ids']['project_id'])
-    if cfg['export_dataset']:
+    if 'export_dataset' in cfg:
         query_string = query_string.replace("EXPORT_DATASET", cfg['export_dataset'])
+    if 'auto_rerun' in cfg and 'days_lookback' in cfg['auto_rerun']:
+        query_string = query_string.replace("DAYS_LOOKBACK", str(cfg['auto_rerun']['days_lookback']))
     query_string = query_string.replace("YOUR_DOMAINS", domains_str)
 
     query_string = query_string.replace("YOUR_TIMESTAMP_PARAMETER", timestamp)
@@ -565,9 +567,13 @@ def create_tables_from_list(self, bigquery, folder, tables_list, op):
 
 
 def recreate_views(self, bigquery, folder, tables_list, op):
+    merged_tables = list(tables_list)
+    merged_tables.extend(bigquery_logs_setup['tables'])
+    merged_tables.extend(bigquery_custom_schemas_setup['tables'])
+
     start = self.request.get('start')
     end = self.request.get('end')
-    views_list = [x for x in tables_list if x['type'] == 'view']
+    views_list = [x for x in merged_tables if x['type'] == 'view']
 
     if len(start) > 0 and len(end) > 0 and type(int(start)) is int and type(int(end)) is int:
         logging.info("Recreating views between {start} and {end}".format(start=start, end=end))
@@ -576,7 +582,14 @@ def recreate_views(self, bigquery, folder, tables_list, op):
             if int(start) <= index <= int(end):
                 logging.info("Recreating view {index:0{digits}}: {name}".format(digits=digits, index=index,
                                                                                name=view_def['name']))
-                do_create_view(self, bigquery, folder, view_def['dataset'], view_def['name'], False, True)
+                if view_def in bigquery_logs_setup['tables']:
+                    view_folder = bigquery_logs_setup['folder']
+                elif view_def in bigquery_custom_schemas_setup['tables']:
+                    view_folder = bigquery_custom_schemas_setup['folder']
+                else:
+                    view_folder = folder
+
+                do_create_view(self, bigquery, view_folder, view_def['dataset'], view_def['name'], False, True)
 
     else:
         digits = len(str(len(views_list)))
@@ -623,10 +636,6 @@ def update_data_level(self, bigquery, op, bigquery_setup):
         return
 
     if level_is_valid(level) or len(target) > 0:
-        if level_is_valid(level) and not target:
-            # only first time
-            bvi_log(date=dateref, resource='bq_{op}_level{level}'.format(op=op, level=level), message_id='start',
-                    message='Start of /bq_api call')
         for index, table_def in enumerate(bigquery_setup['tables']):
             if target:
                 target_dataset, target_name = target.split(".")
@@ -667,14 +676,9 @@ def update_data_level(self, bigquery, op, bigquery_setup):
                                          op=op, level=level, dataset=table_def.get('dataset'), table=table_def.get('name'),
                                          dateref=dateref), method='GET')
                 self.response.write("Task {}<br/> for table {}.{} on {} enqueued,<br/>ETA {}<hr/>".format(task.name, table_def.get('dataset'), table_def.get('name'), dateref, task.eta))
-                bvi_log(date=dateref, resource='bq_{op}_level{level}'.format(op=op, level=level), message_id='end',
-                        message='End of /bq_api call')
             else:
                 logging.info(
                     "Nothing to do with table {index} = {name}".format(index=index, name=table_def.get("name", "name")))
-        if level_is_valid(level):
-            bvi_log(date=dateref, resource='bq_{op}_level{level}'.format(op=op, level=level), message_id='end',
-                    message='End of /bq_api call')
     else:
         logging.error("Wrong parameter level={level}, target={target}".format(level=level, target=target))
         self.response.write("Wrong parameter level={level}, target={target}".format(level=level, target=target))
@@ -768,7 +772,7 @@ class PrintBigQuery(webapp2.RequestHandler):
                                     tables_list=bigquery_logs_setup['tables'], op=op)
 
         elif op == "create_billing_view":
-            create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_logs_setup['folder'],
+            create_tables_from_list(self=self, bigquery=bigquery, folder=bigquery_billing_setup['folder'],
                                     tables_list=bigquery_billing_setup['tables'], op=op)
 
         elif op == "recreate_views":

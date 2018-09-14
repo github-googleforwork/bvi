@@ -21,5 +21,5 @@ import logging
 
 def bvi_log(date, resource="Main", message_id="ERROR", message="Error", regenerate=False):
     logging.info(
-        "BVI LOG ::: DATE=%s ::: RESOURCE=%s ::: MESSAGE_ID=%s ::: MESSAGE=%s ::: REGENERATE=%s",
+        "BVI LOG v4 ::: DATE=%s ::: RESOURCE=%s ::: MESSAGE_ID=%s ::: MESSAGE=%s ::: REGENERATE=%s",
         date, resource, message_id, message, regenerate)

@@ -29,7 +29,6 @@ import sys
 from datetime import datetime
 from google.appengine.api import taskqueue
 from main import returnUserUsageToken, delete_table_big_query, get_dateref_or_from_cron
-from bvi_logger import bvi_log
 
 import yaml
 
@@ -56,7 +55,6 @@ class PrintUserUsage(webapp2.RequestHandler):
             page_token = self.request.get('token')
 
             if not page_token:
-                bvi_log(date=dateref, resource='user_usage', message_id='start', message='Start of /user_usage call')
                 decoratorDate = "".join(dateref.split("-"))
                 # delete table if it exists to avoid data duplication
                 delete_table_big_query('user_usage${decoratorDate}'.format(decoratorDate=decoratorDate))
@@ -104,8 +102,6 @@ class PrintUserUsage(webapp2.RequestHandler):
             logging.error(err)
             self.response.write('User Usage for ' + dateref + ' - ' + cfg['domains'] + ': ERROR')
             raise err
-
-        bvi_log(date=dateref, resource='user_usage', message_id='end', message='End of /user_usage call')
 
 
 application = webapp2.WSGIApplication([('/user_usage', PrintUserUsage)],

@@ -17,7 +17,7 @@ FROM (
   FROM
     [YOUR_PROJECT_ID:adoption.product_adoption_daily]
   WHERE
-    _PARTITIONTIME >= DATE_ADD(TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day)]),-30,"DAY")
+    _PARTITIONTIME >= DATE_ADD(TIMESTAMP((SELECT MAX(date) FROM [YOUR_PROJECT_ID:adoption.adoption_30day])),-30,"DAY")
     AND (document) > 0
   GROUP BY 1) adoption
 INNER JOIN (

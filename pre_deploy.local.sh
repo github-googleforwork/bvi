@@ -88,9 +88,9 @@ if [ ! -z "${bvicfg_task_management_page_size}" ]; then
 	read page_size
 	page_size=${page_size:=${bvicfg_task_management_page_size}}
 else
-	echo -n "Enter the preferred page_size value and press [ENTER] (default 50): "
+	echo -n "Enter the preferred page_size value and press [ENTER] (default 100): "
 	read page_size
-	page_size=${page_size:=50}
+	page_size=${page_size:=100}
 fi
 echo
 

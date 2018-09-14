@@ -54,7 +54,7 @@ if cfg['plan'] == 'Business':
     maxResultsPage_UserUsage = cfg['task_management']['page_size_user_usage']
 
 #Added to avoid DeadlineExceededError: Deadline exceeded while waiting for HTTP response from URL:
-urlfetch.set_default_fetch_deadline(600)
+urlfetch.set_default_fetch_deadline(60)
 
 # Create Report Object
 # Parameters:
@@ -103,7 +103,7 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
 
 def createBigQueryService(sScope, report1, report2):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(cfg['credentials']['bigquery'], sScope)
-    http_auth = credentials.authorize(Http(timeout=60))
+    http_auth = credentials.authorize(Http(timeout=180))
     bigquery_service = build(report1, report2, credentials=credentials, http=http_auth)
     return bigquery_service
 

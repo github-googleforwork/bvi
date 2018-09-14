@@ -1,40 +1,44 @@
 first:
   endpoint: /historical_data?report=users_list&Sdate=start_date&Edate=end_date
   queues: userq1,userq2,userq3
-  next_step: bqUpdate1
-bqUpdate1:
+  next_step: bq_update_level1
+bq_update_level1:
   endpoint: /historical_update?Level=1&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel1
-  next_step: bqUpdate2
-bqUpdate2:
+  missing_data_table: raw_data.missing_data_level1
+  next_step: bq_update_level2
+bq_update_level2:
   endpoint: /historical_update?Level=2&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel2
-  next_step: bqUpdate3
-bqUpdate3:
+  missing_data_table: raw_data.missing_data_level2
+  next_step: bq_update_level3
+bq_update_level3:
   endpoint: /historical_update?Level=3&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel3
-  next_step: bqUpdate4
-bqUpdate4:
+  next_step: bq_update_level4
+bq_update_level4:
   endpoint: /historical_update?Level=4&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel4
-  next_step: bqUpdate5
-bqUpdate5:
+  missing_data_table: raw_data.missing_data_level4
+  next_step: bq_update_level5
+bq_update_level5:
   endpoint: /historical_update?Level=5&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel5
-  next_step: bqUpdate6
-bqUpdate6:
+  next_step: bq_update_level6
+bq_update_level6:
   endpoint: /historical_update?Level=6&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel6
-  next_step: bqUpdate7
-bqUpdate7:
+  missing_data_table: raw_data.missing_data_level6
+  next_step: bq_update_level7
+bq_update_level7:
   endpoint: /historical_update?Level=7&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel7
-  next_step: bqCustomUpdate1
-bqCustomUpdate1:
+  next_step: bq_custom_update_level1
+bq_custom_update_level1:
   endpoint: /historical_update?Level=custom&Sdate=start_date&Edate=end_date
   queues: bqUpdateByLevel1
   next_step: checkFailure
 checkFailure:
-  endpoint: /check_failure?Sdate=start_date&Edate=end_date
+  endpoint: /historical_check_failure?Sdate=start_date&Edate=end_date
   queues: checkFailureQ
   next_step:

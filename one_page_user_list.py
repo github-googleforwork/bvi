@@ -56,8 +56,6 @@ class PrintOneUserListPage(webapp2.RequestHandler):
             self.response.write('Users List for ' + dDate + ' - ' + domain + ': ERROR')
             raise err
 
-        bvi_log(date=dDate, resource='users_list', message_id='end', message='End of /one_page_user_list call')
-
 
 application = webapp2.WSGIApplication([('/one_page_user_list', PrintOneUserListPage)],
                                       debug=True)
