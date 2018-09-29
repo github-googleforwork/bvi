@@ -32,7 +32,7 @@ custom_fields_sheets_link: CUSTOM_FIELDS_SHEETS_LINK
 
 notification_email: NOTIFICATION_EMAIL
 
-auto_rerun:
+auto_recover:
   frequency: 7
   days_lookback: 30
 

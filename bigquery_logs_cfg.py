@@ -68,4 +68,16 @@ setup['tables'] = [
         'description': 'Errors Dashboard',
         'type': 'view',
     },
+    {
+        'name': 'last_executed',
+        'dataset': 'logs',
+        'description': 'Last executed',
+        'type': 'view',
+    },
+    {
+        'name': 'status_board',
+        'dataset': 'logs',
+        'description': 'Status Board',
+        'type': 'view',
+    }
 ]

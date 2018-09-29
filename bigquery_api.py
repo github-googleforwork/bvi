@@ -343,10 +343,10 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
     query_fp = open('{folder}/{dataset}/{name}.sql'.format(folder=folder, dataset=view_dataset, name=view_name), 'r')
     query_string = query_fp.read()
     query_string = query_string.replace("YOUR_PROJECT_ID", cfg['ids']['project_id'])
-    if 'export_dataset' in cfg:
+    if 'export_dataset' in cfg and cfg['export_dataset']:
         query_string = query_string.replace("EXPORT_DATASET", cfg['export_dataset'])
-    if 'auto_rerun' in cfg and 'days_lookback' in cfg['auto_rerun']:
-        query_string = query_string.replace("DAYS_LOOKBACK", str(cfg['auto_rerun']['days_lookback']))
+    if 'auto_recover' in cfg and 'days_lookback' in cfg['auto_recover']:
+        query_string = query_string.replace("DAYS_LOOKBACK", str(cfg['auto_recover']['days_lookback']))
     query_string = query_string.replace("YOUR_DOMAINS", domains_str)
 
     query_string = query_string.replace("YOUR_TIMESTAMP_PARAMETER", timestamp)

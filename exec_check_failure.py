@@ -70,7 +70,7 @@ class CheckFailure(webapp2.RequestHandler):
 
         logging.info('Checking the processes for [{}]'.format(dateref))
 
-        query = "SELECT report_date, status FROM logs.status_board2 WHERE report_date = \'" + dateref + "\'"
+        query = "SELECT report_date, status FROM logs.status_board WHERE report_date = \'" + dateref + "\'"
 
         result = fetch_big_query_data(bigquery, project_id, query, 10)
         if 'rows' in result:

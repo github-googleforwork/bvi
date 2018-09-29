@@ -47,4 +47,3 @@ bq_custom_update_level1:
 checkFailure:
   endpoint: /historical_check_failure?Sdate=start_date&Edate=end_date
   queues: checkFailureQ
-  next_step:

@@ -47,6 +47,80 @@ def get_log_step(step):
     return log_step
 
 
+def count_queued_tasks(queues_to_monitor):
+    count_tasks = 0
+    if queues_to_monitor:
+        queues_array = queues_to_monitor.split(',')
+        stats_list = taskqueue.QueueStatistics.fetch(queues_array)
+        for queue_stats in stats_list:
+            if queue_stats.tasks:
+                count_tasks += queue_stats.tasks
+            if queue_stats.executed_last_minute:
+                count_tasks += queue_stats.executed_last_minute
+            if queue_stats.in_flight:
+                count_tasks += queue_stats.in_flight
+    
+    return count_tasks
+
+
+def should_check_for_auto_recover():
+    if 'auto_recover' in cfg and 'frequency' in cfg['auto_recover']:
+        frequency = cfg['auto_recover']['frequency']
+        if frequency:
+            today = date.today()
+            first_day = date(today.year, 1, 1)
+            days_in_year = (today - first_day).days
+            
+            return days_in_year % frequency == 0
+        else:
+            return False
+    
+
+def get_manager_for_exec_type(exec_type):
+    if exec_type == 'daily':
+        ymlfile_name = 'manager.yaml'
+    elif exec_type == 'historical':
+        ymlfile_name = 'manager_historical.yaml'
+    with open(ymlfile_name, 'r') as mgrymlfile:
+        mgr = yaml.load(mgrymlfile)
+        
+    return mgr
+
+
+def exec_historical(mgr, step, SdDate, EdDate):
+    logging.info('Create Historical data')
+
+    start_date = date(int(SdDate.split('-')[0]), int(SdDate.split('-')[1]), int(SdDate.split('-')[2]))
+    end_date = date(int(EdDate.split('-')[0]), int(EdDate.split('-')[1]), int(EdDate.split('-')[2]))
+
+    today = date.today()
+    today_4 = today - timedelta(days=4)
+    if start_date > today_4:
+        logging.info('Error: Start Date > Today - 4 days, try another Start Date')
+        return
+    if end_date > today_4:
+        logging.info('Error: End Date > Today - 4 days, try another End Date')
+        return
+
+    Number_days = abs((start_date - end_date).days)
+    dDate = SdDate
+    iterating_day = start_date
+
+    n = 0
+    while n <= int(Number_days):
+        bvi_log(date=dDate, resource=get_log_step(step), message_id='start',
+                message='Start of {} step'.format(step))
+        endpoint = mgr[step]['endpoint'].replace('from_cron', dDate)
+        logging.info(endpoint)
+        taskqueue.add(queue_name=cfg['queues']['slow'], url=endpoint, method='GET')
+
+        iterating_day = iterating_day + timedelta(days=1)
+        dDate = iterating_day.strftime("%Y-%m-%d")
+        n += 1
+
+    logging.info('Sent  ' + str(n) + ' days request for ' + step)
+
+
 class ExecManager(webapp2.RequestHandler):
     def get(self):
         project_id = cfg['ids']['project_id']
@@ -58,87 +132,63 @@ class ExecManager(webapp2.RequestHandler):
         dateref = self.request.get('dateref')
         start_date = self.request.get('Sdate')
         end_date = self.request.get('Edate')
-        auto_rerun = self.request.get('auto_rerun', False)
+        auto_recover = self.request.get('auto_recover', False)
 
-        today = date.today()
-        first_day = date(today.year, 1, 1)
-        days_in_year = (today - first_day).days
-        frequency = cfg['auto_rerun']['frequency']
-
-        if exec_type == 'daily' and step == 'first' and begin_step and days_in_year % frequency == 0:
+        if should_check_for_auto_recover() and exec_type == 'daily' and step == 'first' and begin_step:
             # verifying if an error occurred in the last days, only in every 'frequency' days
-            logging.info("[auto-rerun] Verifying date to start...")
+            logging.info("[auto-recover] Verifying need to execute auto-recover...")
             bigquery = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')
             query = "SELECT MIN(min_date) as first_fail FROM [{}:logs.errors_dashboard]".format(project_id)
             result = fetch_big_query_data(bigquery, project_id, query, 10)
             rows = convert_big_query_result(result, ERROR_BEGIN)
 
             if len(rows) == 1 and rows[0]['first_fail']:
-                # error occurred in a previous day, moving to historical execution to run again from the first error
                 exec_type = 'historical'
                 start_date = rows[0]['first_fail']
                 end_date = dateref
-                auto_rerun = True
-                logging.info("[auto-rerun] Starting from {}".format(start_date))
+                auto_recover = True
+                logging.info("[auto-recover] Error occurred in a previous day, moving to historical execution to run \
+                again since the first failed execution date. \
+                auto-recover starting from {}".format(start_date))
             else:
-                logging.info("[auto-rerun] Not needed, no errors found in last {} days.".format(
-                    cfg['auto_rerun']['days_lookback']))
+                logging.info("[auto-recover] Not needed, no errors found in last {} days.".format(
+                    cfg['auto_recover']['days_lookback']))
 
         log_date = dateref
         if exec_type == 'daily':
-            ymlfile_name = 'manager.yaml'
             date_params = '&dateref={}'.format(dateref)
         elif exec_type == 'historical':
-            ymlfile_name = 'manager_historical.yaml'
             date_params = '&Sdate={}&Edate={}'.format(start_date, end_date)
             log_date = start_date
-        with open(ymlfile_name, 'r') as mgrymlfile:
-            mgr = yaml.load(mgrymlfile)
 
         if step == 'first' and begin_step:
             bvi_log(date=log_date, resource='exec_manager', message_id='start',
                     message='Start of BVI {} execution'.format(exec_type))
 
+        with open('manager.yaml', 'r') as mgrymlfile:
+            mgr = yaml.load(mgrymlfile)
         exec_manager_queue = cfg['queues']['exec_manager']
-        queues_to_monitor = mgr[step].get('queues')
 
         if begin_step:
-            bvi_log(date=log_date, resource=get_log_step(step), message_id='start',
-                    message='Start of {} step'.format(get_log_step(step)))
+            if exec_type == 'daily':
+                bvi_log(date=log_date, resource=get_log_step(step), message_id='start',
+                        message='Start of {} step'.format(step))
+                endpoint = mgr[step]['endpoint'].replace('from_cron', dateref)
+                taskqueue.add(queue_name=exec_manager_queue, url=endpoint, method='GET')
+            elif exec_type == 'historical':
+                exec_historical(mgr, step, start_date, end_date)
 
-            endpoint = mgr[step]['endpoint'] \
-                .replace('from_cron', dateref) \
-                .replace('start_date', start_date) \
-                .replace('end_date', end_date)
-            taskqueue.add(queue_name=exec_manager_queue, url=endpoint, method='GET')
             # wait for tasks to be created in the queue
             time.sleep(15)
 
-        count_tasks = 0
-        if queues_to_monitor:
-            queues_array = queues_to_monitor.split(',')
-            stats_list = taskqueue.QueueStatistics.fetch(queues_array)
-            for queue_stats in stats_list:
-                if queue_stats.tasks:
-                    count_tasks += queue_stats.tasks
-                if queue_stats.executed_last_minute:
-                    count_tasks += queue_stats.executed_last_minute
-                if queue_stats.in_flight:
-                    count_tasks += queue_stats.in_flight
+        count_tasks = count_queued_tasks(mgr[step].get('queues'))
+        if count_tasks == 0 and 'next_step' in mgr[step] and mgr[step]['next_step']:
+            # Finished all tasks from this step
 
-        if count_tasks > 0:
-            # Still executing tasks, just continue to monitor queues every 10 seconds
-            taskqueue.add(queue_name=exec_manager_queue,
-                          url='/exec_manager?type={}{}&step={}&auto_rerun={}'.format(
-                              exec_type, date_params, step, auto_rerun),
-                          method='GET', countdown=10)
-        elif count_tasks == 0 and mgr[step]['next_step']:
-            # Tasks finished
-
-            if auto_rerun and 'missing_data_table' in mgr[step]:
-                # Check if the rerun was successful
-                logging.info("[auto-rerun] Checking for effectiveness...")
-                lookback_date_obj = date.today() - timedelta(days=cfg['auto_rerun']['days_lookback'])
+            if auto_recover and 'missing_data_table' in mgr[step]:
+                # Check if the auto-recover was successful
+                logging.info("[auto-recover] Checking for effectiveness...")
+                lookback_date_obj = date.today() - timedelta(days=cfg['auto_recover']['days_lookback'])
                 lookback_date = lookback_date_obj.strftime("%Y-%m-%d")
                 bigquery = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')
                 check_query = "SELECT MIN(report_date) AS report_date FROM [{}:{}] " \
@@ -154,35 +204,44 @@ class ExecManager(webapp2.RequestHandler):
                         start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
                         if min_error_date_obj > start_date_obj:
                             logging.info(
-                                "[auto-rerun] Min error date for '{}' is greater than start_date, \
-                                auto rerun should proceed.".format(
+                                "[auto-recover] Min error date for '{}' is greater than start_date, \
+                                auto-recover should proceed.".format(
                                     mgr[step]['missing_data_table']))
                         else:
-                            logging.info("[auto-rerun] Could not fix any missing data for '{}'. \
-                                            Reverting to daily ({}) execution.".format(
+                            logging.info("[auto-recover] Could not fix any missing data for '{}'. \
+                            Reverting to daily ({}) execution.".format(
                                 mgr[step]['missing_data_table'],
                                 end_date))
                             exec_type = 'daily'
                             date_params = '&dateref={}'.format(end_date)
                     else:
                         logging.info(
-                            "[auto-rerun] No missing data for '{}', auto rerun should proceed.".format(
+                            "[auto-recover] No missing data for '{}', auto-recover should proceed.".format(
                                 mgr[step]['missing_data_table']))
                 else:
                     logging.info(
-                        "[auto-rerun] No missing data for '{}', auto rerun should proceed.".format(
+                        "[auto-recover] No missing data for '{}', auto-recover should proceed.".format(
                             mgr[step]['missing_data_table']))
-                logging.info("[auto-rerun] Finished checking for effectiveness.")
+                logging.info("[auto-recover] Finished checking for effectiveness.")
 
             # Execute next step
             bvi_log(date=log_date, resource=get_log_step(step), message_id='end',
                     message='End of {} step'.format(get_log_step(step)))
             taskqueue.add(queue_name=exec_manager_queue,
-                      url='/exec_manager?type={}{}&step={}&begin_step=True&auto_rerun={}'.format(
-                          exec_type, date_params, mgr[step]['next_step'], auto_rerun),
-                      method='GET')
+                          url='/exec_manager?type={}{}&step={}&begin_step=True&auto_recover={}'.format(
+                              exec_type, date_params, mgr[step]['next_step'], auto_recover),
+                          method='GET')
+        
+        elif count_tasks > 0:
+            # Still executing tasks, just schedule to monitor task queues again 10 seconds later
+            logging.info("Waiting for tasks to finish...")
+            taskqueue.add(queue_name=exec_manager_queue,
+                          url='/exec_manager?type={}{}&step={}&auto_recover={}'.format(
+                              exec_type, date_params, step, auto_recover),
+                          method='GET', countdown=10)
+        
         else:
-            # All tasks finished
+            # Finished ALL tasks
             bvi_log(date=log_date, resource='exec_manager', message_id='end',
                     message='End of BVI {} execution'.format(exec_type))
 
