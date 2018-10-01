@@ -9,7 +9,7 @@ FROM (
   SELECT
     DATE(USEC_TO_TIMESTAMP(max_starts.start_time)) AS date,
     max_starts.start_time AS start_time,
-    max_starts.report_date AS report_date,
+    dash.report_date AS report_date,
     dash.status
   FROM (
     SELECT

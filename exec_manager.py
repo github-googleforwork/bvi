@@ -133,8 +133,10 @@ class ExecManager(webapp2.RequestHandler):
         start_date = self.request.get('Sdate')
         end_date = self.request.get('Edate')
         auto_recover = self.request.get('auto_recover', False)
+        disable_auto_recover = self.request.get('disable_auto_recover', False)
 
-        if should_check_for_auto_recover() and exec_type == 'daily' and step == 'first' and begin_step:
+        if should_check_for_auto_recover() and not disable_auto_recover and exec_type == 'daily' \
+                and step == 'first' and begin_step:
             # verifying if an error occurred in the last days, only in every 'frequency' days
             logging.info("[auto-recover] Verifying need to execute auto-recover...")
             bigquery = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')

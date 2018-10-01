@@ -1,5 +1,5 @@
 first:
-  endpoint: /user
+  endpoint: /user?date=from_cron
   queues: userq1,userq2,userq3
   next_step: bq_update_level1
 bq_update_level1:

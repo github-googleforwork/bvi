@@ -31,11 +31,11 @@ echo "Hello, "$USER".  We will setup some information before deploying."
 # DOMAIN(S)
 if [ ! -z "${bvicfg_domains}" ]; then
 	echo "Current domain(s): ${bvicfg_domains}"
-	echo -n "Enter your domain or domains separated by semicolon (;) and press [ENTER] (if you provide nothing, no update is made): "
+	echo -n "Enter your GSuite Domain(s) to generate report data separated by semicolon (;) and press [ENTER] (if you provide nothing, no update is made): "
 	read domains
 	domain=${domain:=${bvicfg_domains}}
 else
-	echo -n "Enter your domain or domains separated by semicolon (;) and press [ENTER]: "
+	echo -n "Enter your GSuite Domain(s) to generate report data separated by semicolon (;) and press [ENTER]: "
 	read domains
 fi
 echo
@@ -159,22 +159,26 @@ echo
 
 # YAML FILES CREATION
 if [ "${plan}" == 'Enterprise' ]; then
-    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_500|${page_size}|g;s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.esku.template > config.yaml
+    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_100|${page_size}|g;s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.esku.template > config.yaml
     cp app.yaml.esku.template app.yaml
     cp queue.yaml.esku.template queue.yaml
     cp manager.yaml.esku.template manager.yaml
-    cp manager_historical.yaml.esku.template manager_historical.yaml
 else
-    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_500|${page_size}|g; s|MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50|${page_size_user_usage}|g; s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.template > config.yaml
+    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_s1500|${page_size}|g; s|MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50|${page_size_user_usage}|g; s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.template > config.yaml
     cp app.yaml.template app.yaml
     cp queue.yaml.template queue.yaml
     cp manager.yaml.template manager.yaml
-    cp manager_historical.yaml.template manager_historical.yaml
 fi
 
-echo "config.yaml has been generated. Please check it before deploying!"
-echo "CHECK 1: Put your credential files under credentials folder and set them properly in config.yaml"
-echo "CHECK 2: If you set any of the spreadsheets (business survey or custom fields), "
-echo "         share these spreadsheets with the same service account email address used to access BigQuery data."
-echo "CHECK 3: When using BigQuery export from GSuite to a dataset different from the default one (Reports),"
-echo "         set the correct name in 'export_dataset' in config.yaml"
+echo "================================================================"
+echo "The base config.yaml configuration file has been generated. Please check and finish customizing it before deploying!"
+echo ""
+echo " * TASK 1: Put your credential files under credentials folder and set them properly in config.yaml"
+echo " * TASK 2: If you set any of the spreadsheets (business survey or custom fields), "
+echo "           share these spreadsheets with the same service account email address used to access BigQuery data."
+echo " * TASK 3: If you set GSuite BigQuery export to a dataset named differently then 'Reports' (the default),"
+echo "           set the correct name in 'export_dataset' property in config.yaml"
+echo " * TASK 4: The auto recover feature is enabled by default with the 'frequency' set to 7 and 'lookback_days' set to 30."
+echo "           If you want different values, please change 'frequency' and 'lookback_days' properties in config.yaml"
+echo "           If you want to disable this feature, please remove the properties 'auto_recover', 'frequency'"
+echo "           and 'lookback_days' from config.yaml"
