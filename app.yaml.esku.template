@@ -15,9 +15,6 @@ handlers:
 - url: /user_delay
   script: user_delay.application
 
-- url: /historical_update
-  script: historical_update.application
-
 - url: /volume_report
   script: volume_report.application
 
@@ -30,8 +27,11 @@ handlers:
 - url: /exec_check_failure
   script: exec_check_failure.application
 
-- url: /historical_check_failure
-  script: historical_check_failure.application
+- url: /exec_manager
+  script: exec_manager.application
+
+- url: /run
+  script: run.application
 
 - url: /
   script: main.application

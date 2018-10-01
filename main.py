@@ -67,7 +67,7 @@ urlfetch.set_default_fetch_deadline(60)
 # Creates a Reports API object with a JSON file and a defined scope.
 # Needs to delegate the credentials, as the service account in the JSON file
 # has no credentials to query Google Apps APIs and a SA (SuperAdmin) has.
-# Added timeout=30 on line 82 to avoid DeadlineExceededError
+# Added timeout=180 on line 85 to avoid DeadlineExceededError
 #
 # Returns: Reports API Object to query
 
@@ -82,7 +82,7 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
         logging.info(credentials)
         delegated_credentials = credentials.create_delegated(SADelegated)
         logging.info(delegated_credentials)
-        http_auth_delegated = delegated_credentials.authorize(Http(timeout=30))
+        http_auth_delegated = delegated_credentials.authorize(Http(timeout=180))
         logging.info(http_auth_delegated)
         return build(report1, report2, http=http_auth_delegated)
     except Exception as err:

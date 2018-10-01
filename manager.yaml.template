@@ -1,46 +1,49 @@
 first:
   endpoint: /customer?date=from_cron
+  queues: metricsqs
+  missing_data_table: raw_data.missing_data_customer
   next_step: users_list
 users_list:
   endpoint: /user?date=from_cron
-  queues: userq1,userq2,userq3
+  queues: userq1,userq2,userq3,metricsqs
   next_step: user_usage
 user_usage:
   endpoint: /user_usage?date=from_cron
-  queues: usageq1,usageq2,usageq3,usageq4,usageq5
+  queues: usageq1,usageq2,usageq3,usageq4,usageq5,metricsqs
+  missing_data_table: raw_data.missing_data_user
   next_step: activities
 activities:
   endpoint: /activities?date=from_cron
-  queues: activityq1,activityq2,activityq3,activityq4,activityq5
+  queues: activityq1,activityq2,activityq3,activityq4,activityq5,metricsqs
   next_step: bq_update_level1
 bq_update_level1:
   endpoint: /bq_api?op=update&level=1&dateref=from_cron
-  queues: bqUpdateByLevel1
+  queues: bqUpdateByLevel1,metricsqs
   next_step: bq_update_level2
 bq_update_level2:
   endpoint: /bq_api?op=update&level=2&dateref=from_cron
-  queues: bqUpdateByLevel2
+  queues: bqUpdateByLevel2,metricsqs
   next_step: bq_update_level3
 bq_update_level3:
   endpoint: /bq_api?op=update&level=3&dateref=from_cron
-  queues: bqUpdateByLevel3
+  queues: bqUpdateByLevel3,metricsqs
   next_step: bq_update_level4
 bq_update_level4:
   endpoint: /bq_api?op=update&level=4&dateref=from_cron
-  queues: bqUpdateByLevel4
+  queues: bqUpdateByLevel4,metricsqs
   next_step: bq_update_level5
 bq_update_level5:
   endpoint: /bq_api?op=update&level=5&dateref=from_cron
-  queues: bqUpdateByLevel5
+  queues: bqUpdateByLevel5,metricsqs
   next_step: bq_update_level6
 bq_update_level6:
   endpoint: /bq_api?op=update&level=6&dateref=from_cron
-  queues: bqUpdateByLevel6
+  queues: bqUpdateByLevel6,metricsqs
   next_step: bq_custom_update_level1
 bq_custom_update_level1:
   endpoint: /bq_api?op=custom_update&level=1&dateref=from_cron
-  queues: bqUpdateByLevel1
+  queues: bqUpdateByLevel1,metricsqs
   next_step: checkFailure
 checkFailure:
   endpoint: /check_failure?dateref=from_cron
-  queues: checkFailureQ
+  queues: checkFailureQ,metricsqs

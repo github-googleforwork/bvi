@@ -133,9 +133,9 @@ class ExecManager(webapp2.RequestHandler):
         start_date = self.request.get('Sdate')
         end_date = self.request.get('Edate')
         auto_recover = self.request.get('auto_recover', False)
-        disable_auto_recover = self.request.get('disable_auto_recover', False)
+        enable_auto_recover = self.request.get('enable_auto_recover', True)
 
-        if should_check_for_auto_recover() and not disable_auto_recover and exec_type == 'daily' \
+        if should_check_for_auto_recover() and enable_auto_recover and exec_type == 'daily' \
                 and step == 'first' and begin_step:
             # verifying if an error occurred in the last days, only in every 'frequency' days
             logging.info("[auto-recover] Verifying need to execute auto-recover...")
@@ -158,9 +158,10 @@ class ExecManager(webapp2.RequestHandler):
 
         log_date = dateref
         if exec_type == 'daily':
-            date_params = '&dateref={}'.format(dateref)
+            date_params = '&dateref={}&enable_auto_recover={}'.format(dateref, str(enable_auto_recover))
         elif exec_type == 'historical':
-            date_params = '&Sdate={}&Edate={}'.format(start_date, end_date)
+            date_params = '&Sdate={}&Edate={}&enable_auto_recover={}'.format(start_date,
+                                                                              end_date, str(enable_auto_recover))
             log_date = start_date
 
         if step == 'first' and begin_step:

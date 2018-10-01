@@ -18,15 +18,6 @@ handlers:
 - url: /activities
   script: activities.application
 
-- url: /historical_data
-  script: historical_data.application
- 
-- url: /historical_update
-  script: historical_update.application
-
-- url: /user_extended
-  script: user_extended.application
-  
 - url: /one_page_user_list
   script: one_page_user_list.application
 
@@ -54,8 +45,11 @@ handlers:
 - url: /exec_check_failure
   script: exec_check_failure.application
 
-- url: /historical_check_failure
-  script: historical_check_failure.application
+- url: /exec_manager
+  script: exec_manager.application
+
+- url: /run
+  script: run.application
 
 - url: /
   script: main.application
