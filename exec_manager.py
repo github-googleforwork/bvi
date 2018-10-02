@@ -149,9 +149,9 @@ class ExecManager(webapp2.RequestHandler):
                 start_date = rows[0]['first_fail']
                 end_date = dateref
                 auto_recover = True
-                logging.info("[auto-recover] Error occurred in a previous day, moving to historical execution to run \
-                again since the first failed execution date. \
-                auto-recover starting from {}".format(start_date))
+                logging.info("[auto-recover] Error occurred in a previous day, moving to historical execution to run "
+                             + "again since the first failed execution date. "
+                             + "auto-recover starting from {}".format(start_date))
             else:
                 logging.info("[auto-recover] Not needed, no errors found in last {} days.".format(
                     cfg['auto_recover']['days_lookback']))
@@ -207,14 +207,12 @@ class ExecManager(webapp2.RequestHandler):
                         start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
                         if min_error_date_obj > start_date_obj:
                             logging.info(
-                                "[auto-recover] Min error date for '{}' is greater than start_date, \
-                                auto-recover should proceed.".format(
-                                    mgr[step]['missing_data_table']))
+                                "[auto-recover] Min error date for '{}' ".format(mgr[step]['missing_data_table'])
+                                + "is greater than start_date, auto-recover should proceed.")
                         else:
-                            logging.info("[auto-recover] Could not fix any missing data for '{}'. \
-                            Reverting to daily ({}) execution.".format(
-                                mgr[step]['missing_data_table'],
-                                end_date))
+                            logging.info("[auto-recover] Could not fix any missing data for '{}'. ".format(
+                                            mgr[step]['missing_data_table'])
+                                         + "Reverting to daily ({}) execution.".format(end_date))
                             exec_type = 'daily'
                             date_params = '&dateref={}'.format(end_date)
                     else:
