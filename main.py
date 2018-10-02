@@ -33,6 +33,7 @@
 # Google APIs, BQ and GAE Requirements
 import logging
 import webapp2
+import time
 from httplib2 import Http
 from google.appengine.api.urlfetch_errors import DeadlineExceededError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -67,27 +68,41 @@ urlfetch.set_default_fetch_deadline(60)
 # Creates a Reports API object with a JSON file and a defined scope.
 # Needs to delegate the credentials, as the service account in the JSON file
 # has no credentials to query Google Apps APIs and a SA (SuperAdmin) has.
-# Added timeout=180 on line 85 to avoid DeadlineExceededError
 #
 # Returns: Reports API Object to query
+
+
+def refresh_credentials(credentials, num_retries):
+    retried = 0
+    while retried < num_retries:
+        try:
+            retried += 1
+            http_auth = credentials.authorize(Http(timeout=30))
+        except Exception as err:
+            if retried == 5:
+                raise err
+            logging.info("Retrying token refresh!")
+            time.sleep(5)
+    return http_auth
+
 
 def createReportObject(sScope, report1, report2, SAJson, SADelegated):
     logging.info(sScope)
     logging.info(report1)
     logging.info(report2)
     logging.info(SAJson)
+
     try:
         logging.info("Impersonating {SA}".format(SA=SADelegated))
         credentials = ServiceAccountCredentials.from_json_keyfile_name(SAJson, sScope)
         logging.info(credentials)
         delegated_credentials = credentials.create_delegated(SADelegated)
         logging.info(delegated_credentials)
-        http_auth_delegated = delegated_credentials.authorize(Http(timeout=180))
+        http_auth_delegated = refresh_credentials(delegated_credentials, 5)
         logging.info(http_auth_delegated)
         return build(report1, report2, http=http_auth_delegated)
     except Exception as err:
         logging.error(err)
-        users = ''
         raise err
 
 
@@ -103,7 +118,7 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
 
 def createBigQueryService(sScope, report1, report2):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(cfg['credentials']['bigquery'], sScope)
-    http_auth = credentials.authorize(Http(timeout=180))
+    http_auth = refresh_credentials(credentials, 5)
     bigquery_service = build(report1, report2, credentials=credentials, http=http_auth)
     return bigquery_service
 
