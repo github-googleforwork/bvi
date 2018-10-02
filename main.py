@@ -72,18 +72,34 @@ urlfetch.set_default_fetch_deadline(60)
 # Returns: Reports API Object to query
 
 
-def refresh_credentials(credentials, num_retries):
+def refresh_credentials(credentials):
     retried = 0
-    while retried < num_retries:
+    while retried < 5:
         try:
             retried += 1
             http_auth = credentials.authorize(Http(timeout=30))
+            break
         except Exception as err:
             if retried == 5:
                 raise err
             logging.info("Retrying token refresh!")
             time.sleep(5)
     return http_auth
+
+
+def execute_request_with_retries(request):
+    retried = 0
+    while retried < 5:
+        try:
+            retried += 1
+            result = request.execute()
+            break
+        except Exception as err:
+            if retried == 5:
+                raise err
+            logging.info("Retrying request!")
+            time.sleep(5)
+    return result
 
 
 def createReportObject(sScope, report1, report2, SAJson, SADelegated):
@@ -98,7 +114,7 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
         logging.info(credentials)
         delegated_credentials = credentials.create_delegated(SADelegated)
         logging.info(delegated_credentials)
-        http_auth_delegated = refresh_credentials(delegated_credentials, 5)
+        http_auth_delegated = refresh_credentials(delegated_credentials)
         logging.info(http_auth_delegated)
         return build(report1, report2, http=http_auth_delegated)
     except Exception as err:
@@ -118,7 +134,7 @@ def createReportObject(sScope, report1, report2, SAJson, SADelegated):
 
 def createBigQueryService(sScope, report1, report2):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(cfg['credentials']['bigquery'], sScope)
-    http_auth = refresh_credentials(credentials, 5)
+    http_auth = refresh_credentials(credentials)
     bigquery_service = build(report1, report2, credentials=credentials, http=http_auth)
     return bigquery_service
 
@@ -143,7 +159,7 @@ def returnUsersListGenerator(dDomain, SAJson, SADelegated):
     while True:
         try:
             request = reports.users().list(domain=dDomain, pageToken=page_token, fields=fields)
-            results = request.execute()
+            results = execute_request_with_retries(request)
             users = results['users']
             logging.info("Page Token {}".format(page_token))
             for user_item in users:
@@ -220,7 +236,7 @@ def returnCustomerUsageReport(dDay, SAJson, SADelegated):
         try:
             request = reports.customerUsageReports().get(date=dDay, fields=fields, pageToken=page_token,
                                                          parameters=parameters)
-            results = request.execute()
+            results = execute_request_with_retries(request)
             usage = results.get('usageReports', [])
             if 'nextPageToken' in results:
                 page_token = results['nextPageToken']
@@ -260,8 +276,9 @@ def returnUserUsageReport(uUser, dDay, SAJson, SADelegated):
     fields = 'nextPageToken,usageReports(date,entity,parameters)'
     while True:
         try:
-            request = reports.userUsageReport().get(userKey=uUser, date=dDay, fields=fields, pageToken=page_token)
-            results = request.execute()
+            request = reports.userUsageReport().get(userKey=uUser, date=dDay, fields=fields,
+                                                    pageToken=page_token)
+            results = execute_request_with_retries(request)
             user_usage = results.get('usageReports', [])
             if 'nextPageToken' in results:
                 page_token = results['nextPageToken']
@@ -303,7 +320,7 @@ def returnAuditLogReport(uUser, appName, dDay, SAJson, SADelegated):
         try:
             request = reports.activities().list(userKey=uUser, applicationName=appName, startTime=startTime,
                                                 endTime=endTime, fields=fields, pageToken=page_token)
-            results = request.execute()
+            results = execute_request_with_retries(request)
             activities = results.get('items', [])
             if 'nextPageToken' in results:
                 page_token = results['nextPageToken']
@@ -418,9 +435,10 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
     fields = 'nextPageToken,users'
     while True:
         try:
-            request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=5, projection='full',
+            request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=5,
+                                           projection='full',
                                            fields=fields)
-            results = request.execute()
+            results = execute_request_with_retries(request)
             users = results['users']
             for user_item in users:
                 user_item[u'date'] = dDate
@@ -468,7 +486,8 @@ def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
             else:
                 request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=maxResultsPage,
                                                fields=fields)
-            results = request.execute()
+            results = execute_request_with_retries(request)
+
             if 'nextPageToken' in results:
                 tokens = results['nextPageToken']
                 page_token = results['nextPageToken']
@@ -512,8 +531,9 @@ def returnUserListPageToken(token, dDay, dDomain, SAJson, SADelegated):
         if page_token == '':
             request = reports.users().list(domain=dDomain, maxResults=maxResultsPage, fields=fields)
         else:
-            request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=maxResultsPage, fields=fields)
-        results = request.execute()
+            request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=maxResultsPage,
+                                           fields=fields)
+        results = execute_request_with_retries(request)
         users = results['users']
         for user_item in users:
             user_item[u'date'] = dDate
@@ -551,10 +571,13 @@ def returnUserUsageToken(dDay, SAJson, SADelegated, page_token):
     while True:
         try:
             if page_token == '':
-                request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields, maxResults=maxResultsPage_UserUsage)
+                request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields,
+                                                        maxResults=maxResultsPage_UserUsage)
             else:
-                request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields, pageToken=page_token, maxResults=maxResultsPage_UserUsage)
-            results = request.execute()
+                request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields,
+                                                        pageToken=page_token,
+                                                        maxResults=maxResultsPage_UserUsage)
+            results = execute_request_with_retries(request)
             pages += 1
             if 'nextPageToken' in results:
                 tokens = results['nextPageToken']
@@ -598,10 +621,12 @@ def returnUserUsagePageToken(token, dDay, SAJson, SADelegated):
     fields = 'nextPageToken,usageReports(date,entity,parameters)'
     try:
         if page_token == '':
-            request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields, maxResults=maxResultsPage_UserUsage)
+            request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields,
+                                                    maxResults=maxResultsPage_UserUsage)
         else:
-            request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields, pageToken=page_token, maxResults=maxResultsPage_UserUsage)
-        results = request.execute()
+            request = reports.userUsageReport().get(userKey='all', date=dDay, fields=fields,
+                                                    pageToken=page_token, maxResults=maxResultsPage_UserUsage)
+        results = execute_request_with_retries(request)
         user_usage = results.get('usageReports', [])
     except Exception as err:
         logging.error(err)
@@ -640,7 +665,8 @@ def returnActivitiesToken(dDay, appName, SAJson, SADelegated, page_token):
                 request = reports.activities().list(userKey='all', applicationName=appName, startTime=startTime,
                                                     endTime=endTime, fields=fields, pageToken=page_token,
                                                     maxResults=maxResultsPage)
-            results = request.execute()
+            results = execute_request_with_retries(request)
+
             if 'nextPageToken' in results:
                 tokens = results['nextPageToken']
                 page_token = results['nextPageToken']
@@ -688,10 +714,10 @@ def returnActivitiesPageToken(token, appName, dDay, SAJson, SADelegated):
                                                 endTime=endTime, fields=fields, maxResults=maxResultsPage)
         else:
             request = reports.activities().list(userKey='all', applicationName=appName, startTime=startTime,
-                                                endTime=endTime, fields=fields, pageToken=page_token, maxResults=maxResultsPage)
-        results = request.execute()
+                                                endTime=endTime, fields=fields, pageToken=page_token,
+                                                maxResults=maxResultsPage)
+        results = execute_request_with_retries(request)
         logging.info(results)
-
         activities = results.get('items', [])
     except Exception as err:
         logging.error(err)
