@@ -74,17 +74,6 @@ def should_check_for_auto_recover():
             return days_in_year % frequency == 0
         else:
             return False
-    
-
-def get_manager_for_exec_type(exec_type):
-    if exec_type == 'daily':
-        ymlfile_name = 'manager.yaml'
-    elif exec_type == 'historical':
-        ymlfile_name = 'manager_historical.yaml'
-    with open(ymlfile_name, 'r') as mgrymlfile:
-        mgr = yaml.load(mgrymlfile)
-        
-    return mgr
 
 
 def exec_historical(mgr, step, SdDate, EdDate):
@@ -133,7 +122,11 @@ class ExecManager(webapp2.RequestHandler):
         start_date = self.request.get('Sdate')
         end_date = self.request.get('Edate')
         auto_recover = self.request.get('auto_recover', False)
+        if auto_recover == 'False' or not auto_recover:
+            auto_recover = False
         enable_auto_recover = self.request.get('enable_auto_recover', True)
+        if enable_auto_recover == 'False' or not enable_auto_recover:
+            enable_auto_recover = False
 
         if should_check_for_auto_recover() and enable_auto_recover and exec_type == 'daily' \
                 and step == 'first' and begin_step:
@@ -161,7 +154,7 @@ class ExecManager(webapp2.RequestHandler):
             date_params = '&dateref={}&enable_auto_recover={}'.format(dateref, str(enable_auto_recover))
         elif exec_type == 'historical':
             date_params = '&Sdate={}&Edate={}&enable_auto_recover={}'.format(start_date,
-                                                                              end_date, str(enable_auto_recover))
+                                                                             end_date, str(enable_auto_recover))
             log_date = start_date
 
         if step == 'first' and begin_step:
@@ -214,7 +207,8 @@ class ExecManager(webapp2.RequestHandler):
                                             mgr[step]['missing_data_table'])
                                          + "Reverting to daily ({}) execution.".format(end_date))
                             exec_type = 'daily'
-                            date_params = '&dateref={}'.format(end_date)
+                            date_params = '&dateref={}&enable_auto_recover=False'.format(end_date)
+                            auto_recover = False
                     else:
                         logging.info(
                             "[auto-recover] No missing data for '{}', auto-recover should proceed.".format(
