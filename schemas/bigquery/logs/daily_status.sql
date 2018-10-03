@@ -3,8 +3,7 @@ SELECT
   start_time,
   date,
   report_date,
-  IF(SUM(IF(dash.status = 'ERROR', 1, 0)) > 0, 'ERROR', 'SUCCESS') AS status,
-  1 as value,
+  IF(SUM(IF(dash.status = 'ERROR', 1, 0)) > 0, 'ERROR', 'SUCCESS') AS status
 FROM (
   SELECT
     DATE(USEC_TO_TIMESTAMP(max_starts.start_time)) AS date,

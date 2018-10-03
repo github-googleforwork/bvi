@@ -1,5 +1,5 @@
 -- errors_dashboard (view)
--- errors_dashboard (view)
+
 SELECT
   *
 FROM (

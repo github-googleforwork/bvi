@@ -88,9 +88,9 @@ if [ ! -z "${bvicfg_task_management_page_size}" ]; then
 	read page_size
 	page_size=${page_size:=${bvicfg_task_management_page_size}}
 else
-	echo -n "Enter the preferred page_size value and press [ENTER] (default 100): "
+	echo -n "Enter the preferred page_size value and press [ENTER] (default 200): "
 	read page_size
-	page_size=${page_size:=100}
+	page_size=${page_size:=200}
 fi
 echo
 
@@ -159,12 +159,12 @@ echo
 
 # YAML FILES CREATION
 if [ "${plan}" == 'Enterprise' ]; then
-    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_100|${page_size}|g;s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.esku.template > config.yaml
+    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_200|${page_size}|g;s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.esku.template > config.yaml
     cp app.yaml.esku.template app.yaml
     cp queue.yaml.esku.template queue.yaml
     cp manager.yaml.esku.template manager.yaml
 else
-    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_s1500|${page_size}|g; s|MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50|${page_size_user_usage}|g; s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.template > config.yaml
+    sed "s|MAX_NUMBER_PAGES_Recommended_200|${max_pages}|g; s|MAX_NUMBER_ROWS_PER_PAGE_Recommended_200|${page_size}|g; s|MAX_NUMBER_ROWS_PER_PAGE_USER_USAGE_Recommended_50|${page_size_user_usage}|g; s|YOUR_EMAIL|${super_admin_email}|g; s|YOUR_DOMAINS_SEPARATED_BY_SEMICOLON|${domains}|g; s|YOUR_PROJECT_ID|${project_id}|g; s|GOOGLE_SHEETS_LINK|${google_sheets_link}|g; s|CUSTOM_FIELDS_SHEETS_LINK|${custom_fields_sheets_link}|g; s|NOTIFICATION_EMAIL|${notification_email}|g" config.yaml.template > config.yaml
     cp app.yaml.template app.yaml
     cp queue.yaml.template queue.yaml
     cp manager.yaml.template manager.yaml
