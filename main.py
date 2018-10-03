@@ -401,12 +401,23 @@ def stream_row_to_bigquery(bigquery, table_name, rows):
         'rows': rows_list
     }
     try:
-        bqstream = bigquery.tabledata().insertAll(
-            projectId=cfg['ids']['project_id'],
-            datasetId=cfg['ids']['dataset_id'],
-            tableId=table_name,
-            body=insert_all_data).execute(num_retries=5)
-        insertErrors = bqstream.get('insertErrors')
+        retried = 0
+        while retried < 5:
+            try:
+                retried += 1
+                bqstream = bigquery.tabledata().insertAll(
+                    projectId=cfg['ids']['project_id'],
+                    datasetId=cfg['ids']['dataset_id'],
+                    tableId=table_name,
+                    body=insert_all_data).execute(num_retries=5)
+                insertErrors = bqstream.get('insertErrors')
+                break
+            except Exception as err:
+                if retried == 5:
+                    raise err
+                logging.info("Retrying streaming!")
+                time.sleep(5)
+
         if insertErrors:
             logging.error(insertErrors)
     except Exception as err:
