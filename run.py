@@ -45,7 +45,7 @@ class Run(webapp2.RequestHandler):
                 return
 
             taskqueue.add(queue_name=cfg['queues']['exec_manager'],
-                          url='/exec_manager?type={}&dateref={}&Edate={}&step={}&begin_step=True&enable_auto_recover={}'
+                          url='/exec_manager?type={}&dateref={}&step={}&begin_step=True&enable_auto_recover={}'
                           .format(exec_type, dateref, step, str(enable_auto_recover)),
                           method='GET')
         elif exec_type == 'historical' and len(start_date) > 0 and len(end_date) > 0:

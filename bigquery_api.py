@@ -821,9 +821,9 @@ class PrintBigQuery(webapp2.RequestHandler):
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_logs_tables"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="create_billing_view"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api",
-                                                                                          op="recreate_views"),
+                                                                           op="create_missing_tables"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api",
-                                                                                          op="create_missing_tables"),
+                                                                                          op="recreate_views"),
                 "<a href='{base}?op={op}' target='_blank'>{op}</a>".format(base="/bq_api", op="update"),
             ]
 
