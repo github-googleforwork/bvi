@@ -585,7 +585,7 @@ def create_missing_tables(self, bigquery, folder, tables_list, op):
     merged_tables.extend(bigquery_logs_setup['tables'])
     merged_tables.extend(bigquery_custom_schemas_setup['tables'])
 
-    part_tables = [x for x in merged_tables if x['type'] == 'table_from_view' and x.get('timePartitioning')]
+    part_tables = [x for x in merged_tables if (x['type'] == 'table_from_view' or x['type'] == 'table')]
 
     start = self.request.get('start')
     end = self.request.get('end')
@@ -606,8 +606,9 @@ def create_missing_tables(self, bigquery, folder, tables_list, op):
                     folder = folder
 
                 do_create_table(self, bigquery, table_def)
-                do_create_view(self, bigquery, folder, table_def['dataset'], table_def['name'],
-                               True, overwrite=True, truncate=False)
+                if table_def['type'] == 'table_from_view':
+                    do_create_view(self, bigquery, folder, table_def['dataset'], table_def['name'],
+                                   True, overwrite=True, truncate=False)
     else:
         generate_html_list(self=self, items_list=part_tables, op=op, resource_type='tables/views', items_per_row=5)
 

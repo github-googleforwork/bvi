@@ -33,6 +33,7 @@ class Run(webapp2.RequestHandler):
         dateref = self.request.get('dateref', 'from_cron')
         start_date = self.request.get('Sdate')
         end_date = self.request.get('Edate')
+        step = self.request.get('step', 'first')
         if exec_type == 'daily' and len(dateref) > 0:
             # user wants to run a specific day, disable auto-recover
             enable_auto_recover = (dateref == 'from_cron')
@@ -44,13 +45,13 @@ class Run(webapp2.RequestHandler):
                 return
 
             taskqueue.add(queue_name=cfg['queues']['exec_manager'],
-                          url='/exec_manager?type=' + exec_type + '&dateref=' + dateref
-                              + '&step=first&begin_step=True&enable_auto_recover=' + str(enable_auto_recover),
+                          url='/exec_manager?type={}&dateref={}&Edate={}&step={}&begin_step=True&enable_auto_recover={}'
+                          .format(exec_type, dateref, step, str(enable_auto_recover)),
                           method='GET')
         elif exec_type == 'historical' and len(start_date) > 0 and len(end_date) > 0:
             taskqueue.add(queue_name=cfg['queues']['exec_manager'],
-                          url='/exec_manager?type=' + exec_type + '&Sdate=' + start_date + '&Edate=' + end_date
-                              + '&step=first&begin_step=True&enable_auto_recover=False',
+                          url='/exec_manager?type={}&Sdate={}&Edate={}&step={}&begin_step=True&enable_auto_recover=False'
+                          .format(exec_type, start_date, end_date, step),
                           method='GET')
 
         self.response.write("BVI Run '{}'".format(exec_type))
