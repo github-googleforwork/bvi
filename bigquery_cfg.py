@@ -46,6 +46,10 @@ setup['datasets'] = [
     {
         'name': 'custom',
         'description': 'Custom fields data',
+    },
+    {
+        'name': 'billing',
+        'description': 'Billing data',
     }
 ]
 
@@ -499,36 +503,6 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
-        'name': 'active_users_with_ou_per_day',
-        'dataset': 'users',
-        'description': 'Active users list that exist in raw_data.audit_log_active_users_per_day, adding their ou',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'active_users',
-        'dataset': 'users',
-        'description': 'Active users list that exist in users.active_users_with_ou_per_day, by taking its latest date available (as a last seen date)',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'active_users_30da_per_ou',
-        'dataset': 'users',
-        'description': 'Active users list that exist in raw_data.audit_log_active_users_per_day, adding their ou, for the time window of 30 days',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
         'name': 'gmail_users_1day',
         'dataset': 'users',
         'description': 'Gmail users per day',
@@ -566,26 +540,6 @@ setup['tables'] = [
             'type': 'DAY',
         },
         'level': 1,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'total_active_users_30day',
-        'dataset': 'users',
-        'description': 'count of distinct active users from drive and gmail over the past 30 days',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'total_active_users_1day',
-        'dataset': 'users',
-        'description': 'count of distinct active users from drive and gmail for each day',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
         'type': 'table_from_view',
     },
     {
@@ -629,192 +583,6 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
-        'name': 'meetings_latest_30day_summary',
-        'dataset': 'adoption',
-        'description': 'Summary with many meetings metrics calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'meetings_per_calls_group',
-        'dataset': 'adoption',
-        'description': 'Meetings summary grouped by calls group from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'calls_by_users_type_pie_chart',
-        'dataset': 'adoption',
-        'description': 'Calls info grouped by type of users calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'meetings_by_users_type_pie_chart',
-        'dataset': 'adoption',
-        'description': 'Meetings info grouped by type of users calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'calls_time_spent_latest_30day_by_device',
-        'dataset': 'adoption',
-        'description': 'Calls time spent grouped by device calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'calls_time_spent_latest_30day_by_user_type',
-        'dataset': 'adoption',
-        'description': 'Calls time spent grouped by user type calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'num_calls_latest_30day_by_device',
-        'dataset': 'adoption',
-        'description': 'Number of calls grouped by device type calculated from past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'meetings_30day_summary',
-        'dataset': 'adoption',
-        'description': 'Number of calls grouped by device type calculated over the past 30 days',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'user_usage_gplus_daily',
-        'dataset': 'adoption',
-        'description': 'gplus metrics daily usage metrics per user',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'calls_time_spent_30day_by_user_type',
-        'dataset': 'adoption',
-        'description': 'Calls time spent grouped by user type calculated over the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'calls_time_spent_30day_by_device',
-        'dataset': 'adoption',
-        'description': 'Calls time spent grouped by device calculated over the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'gplus_30day_summary_latest',
-        'dataset': 'adoption',
-        'description': 'Latest summary with gplus metrics calculated from the past 30 days',
-        'type': 'view',
-    },
-    {
-        'name': 'adoption_30day',
-        'dataset': 'adoption',
-        'description': 'count of distinct active gmail, drive, and unique active users over the past 30 days',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'audit_log_active_users_per_day_drive_gmail',
-        'dataset': 'users',
-        'description': 'Distinct drive and gmail users per day',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'active_users_with_ou_per_day_drive_gmail',
-        'dataset': 'users',
-        'description': 'Distinct drive and gmail users with ou',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'active_users_drive_gmail',
-        'dataset': 'users',
-        'description': 'Distinct drive and gmail users with no ou',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 4,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'audit_log_drive_adoption_per_day',
-        'dataset': 'adoption',
-        'description': 'Users that have been active in drive events',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'profiles_any_per_day_no_ou',
-        'dataset': 'profiles',
-        'description': 'Users classified on profiles, daily',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'profiles_any_per_day_per_ou',
-        'dataset': 'profiles',
-        'description': 'Users classified on profiles, daily, with ou',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'profiles_any_per_ou_last_N_days',
-        'dataset': 'profiles',
-        'description': 'Users classified on profiles, with ou, daily, within last 30 days',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 3,
-        'type': 'table_from_view',
-    },
-    {
-        # Notice this view definition
-        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
-        # before executing
-        'name': 'user_usage_drive_stats_whole_history',
-        'dataset': 'adoption',
-        'description': 'General metrics for adoption (like num_docs_viewed, num_docs_edited, drive_adoption), per user, per day, with users ou, historical registry.',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        # Notice this view definition
-        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
-        # before executing
-        'name': 'collab_profiles',
-        'dataset': 'profiles',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 4,
-        'type': 'table_from_view',
-    },
-    {
         # Notice this view definition
         # requires YOUR_TIMESTAMP_PARAMETER to be replaced
         # before executing
@@ -841,39 +609,86 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
-        # Notice this view definition
-        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
-        # before executing
-        'name': 'drive_adoption_per_day_per_ou',
-        'dataset': 'adoption',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 4,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'active_users_30da',
+        'name': 'active_users_with_ou_per_day',
         'dataset': 'users',
         'description': 'Active users list that exist in raw_data.audit_log_active_users_per_day, adding their ou',
         'timePartitioning': {
             'type': 'DAY',
         },
-        'level': 4,
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'total_active_users_30day',
+        'dataset': 'users',
+        'description': 'count of distinct active users from drive and gmail over the past 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'total_active_users_1day',
+        'dataset': 'users',
+        'description': 'count of distinct active users from drive and gmail for each day',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'meetings_30day_summary',
+        'dataset': 'adoption',
+        'description': 'Number of calls grouped by device type calculated over the past 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'user_usage_gplus_daily',
+        'dataset': 'adoption',
+        'description': 'gplus metrics daily usage metrics per user',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'audit_log_active_users_per_day_drive_gmail',
+        'dataset': 'users',
+        'description': 'Distinct drive and gmail users per day',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'profiles_any_per_day_no_ou',
+        'dataset': 'profiles',
+        'description': 'Users classified on profiles, daily',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
         'type': 'table_from_view',
     },
     {
         # Notice this view definition
         # requires YOUR_TIMESTAMP_PARAMETER to be replaced
         # before executing
-        'name': 'editor_adoption_per_day_per_ou',
+        'name': 'user_usage_drive_stats_whole_history',
         'dataset': 'adoption',
-        'description': '',
+        'description': 'General metrics for adoption (like num_docs_viewed, num_docs_edited, drive_adoption), per user, per day, with users ou, historical registry.',
         'timePartitioning': {
             'type': 'DAY',
         },
-        'level': 4,
+        'level': 2,
         'type': 'table_from_view',
     },
     {
@@ -994,6 +809,86 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
+        'name': 'collab_profiles_30day',
+        'dataset': 'profiles',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 2,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'active_users',
+        'dataset': 'users',
+        'description': 'Active users list that exist in users.active_users_with_ou_per_day, by taking its latest date available (as a last seen date)',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'active_users_30da_per_ou',
+        'dataset': 'users',
+        'description': 'Active users list that exist in raw_data.audit_log_active_users_per_day, adding their ou, for the time window of 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'adoption_30day',
+        'dataset': 'adoption',
+        'description': 'count of distinct active gmail, drive, and unique active users over the past 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'active_users_with_ou_per_day_drive_gmail',
+        'dataset': 'users',
+        'description': 'Distinct drive and gmail users with ou',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'audit_log_drive_adoption_per_day',
+        'dataset': 'adoption',
+        'description': 'Users that have been active in drive events',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'profiles_any_per_day_per_ou',
+        'dataset': 'profiles',
+        'description': 'Users classified on profiles, daily, with ou',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'profiles_any_per_ou_last_N_days',
+        'dataset': 'profiles',
+        'description': 'Users classified on profiles, with ou, daily, within last 30 days',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 3,
+        'type': 'table_from_view',
+    },
+    {
         # Notice this view definition
         # requires YOUR_TIMESTAMP_PARAMETER to be replaced
         # before executing
@@ -1017,6 +912,83 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
+        'name': 'meetings_latest_30day_summary',
+        'dataset': 'adoption',
+        'description': 'Summary with many meetings metrics calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'calls_time_spent_30day_by_user_type',
+        'dataset': 'adoption',
+        'description': 'Calls time spent grouped by user type calculated over the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'calls_time_spent_30day_by_device',
+        'dataset': 'adoption',
+        'description': 'Calls time spent grouped by device calculated over the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'active_users_drive_gmail',
+        'dataset': 'users',
+        'description': 'Distinct drive and gmail users with no ou',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 4,
+        'type': 'table_from_view',
+    },
+    {
+        # Notice this view definition
+        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
+        # before executing
+        'name': 'collab_profiles',
+        'dataset': 'profiles',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 4,
+        'type': 'table_from_view',
+    },
+    {
+        # Notice this view definition
+        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
+        # before executing
+        'name': 'drive_adoption_per_day_per_ou',
+        'dataset': 'adoption',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 4,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'active_users_30da',
+        'dataset': 'users',
+        'description': 'Active users list that exist in raw_data.audit_log_active_users_per_day, adding their ou',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 4,
+        'type': 'table_from_view',
+    },
+    {
+        # Notice this view definition
+        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
+        # before executing
+        'name': 'editor_adoption_per_day_per_ou',
+        'dataset': 'adoption',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 4,
+        'type': 'table_from_view',
+    },
+    {
         # Notice this view definition
         # requires YOUR_TIMESTAMP_PARAMETER to be replaced
         # before executing
@@ -1030,53 +1002,6 @@ setup['tables'] = [
         'type': 'table_from_view',
     },
     {
-        'name': 'product_adoption_30day',
-        'dataset': 'adoption',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 5,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'profiles_any_last_N_days',
-        'dataset': 'profiles',
-        'description': '',
-        'type': 'view',
-    },
-    {
-        # Notice this view definition
-        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
-        # before executing
-        'name': 'adoption',
-        'dataset': 'adoption',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 5,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'adoption_latest',
-        'dataset': 'adoption',
-        'description': '',
-        'type': 'view',
-    },
-    {
-        'name': 'adoption_30day_latest',
-        'dataset': 'adoption',
-        'description': 'Latest 30 day users by product, based on aggregation at the user level',
-        'type': 'view',
-    },
-    {
-        'name': 'adoption_latest_extended',
-        'dataset': 'adoption',
-        'description': '',
-        'type': 'view',
-    },
-    {
         # Notice this view definition
         # requires YOUR_TIMESTAMP_PARAMETER to be replaced
         # before executing
@@ -1088,47 +1013,6 @@ setup['tables'] = [
         },
         'level': 4,
         'type': 'table_from_view',
-    },
-    {
-        'name': 'collab_profiles_30day',
-        'dataset': 'profiles',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 2,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'collab_profiles_latest',
-        'dataset': 'profiles',
-        'description': '',
-        'type': 'view',
-    },
-    {
-        # Notice this view definition
-        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
-        # before executing
-        'name': 'collab_profiles_base',
-        'dataset': 'profiles',
-        'description': '',
-        'timePartitioning': {
-            'type': 'DAY',
-        },
-        'level': 5,
-        'type': 'table_from_view',
-    },
-    {
-        'name': 'collab_profiles_pie_chart',
-        'dataset': 'profiles',
-        'description': '',
-        'type': 'view',
-    },
-    {
-        'name': 'collab_profiles_pie_chart_extended',
-        'dataset': 'profiles',
-        'description': '',
-        'type': 'view',
     },
     {
         # Notice this view definition
@@ -1172,6 +1056,126 @@ setup['tables'] = [
         },
         'level': 4,
         'type': 'table_from_view',
+    },
+    {
+        'name': 'gplus_30day_summary_latest',
+        'dataset': 'adoption',
+        'description': 'Latest summary with gplus metrics calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'meetings_per_calls_group',
+        'dataset': 'adoption',
+        'description': 'Meetings summary grouped by calls group from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'calls_by_users_type_pie_chart',
+        'dataset': 'adoption',
+        'description': 'Calls info grouped by type of users calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'meetings_by_users_type_pie_chart',
+        'dataset': 'adoption',
+        'description': 'Meetings info grouped by type of users calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'calls_time_spent_latest_30day_by_device',
+        'dataset': 'adoption',
+        'description': 'Calls time spent grouped by device calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'calls_time_spent_latest_30day_by_user_type',
+        'dataset': 'adoption',
+        'description': 'Calls time spent grouped by user type calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'num_calls_latest_30day_by_device',
+        'dataset': 'adoption',
+        'description': 'Number of calls grouped by device type calculated from the past 30 days',
+        'type': 'view',
+    },
+    {
+        'name': 'product_adoption_30day',
+        'dataset': 'adoption',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 5,
+        'type': 'table_from_view',
+    },
+    {
+        # Notice this view definition
+        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
+        # before executing
+        'name': 'adoption',
+        'dataset': 'adoption',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 5,
+        'type': 'table_from_view',
+    },
+    {
+        # Notice this view definition
+        # requires YOUR_TIMESTAMP_PARAMETER to be replaced
+        # before executing
+        'name': 'collab_profiles_base',
+        'dataset': 'profiles',
+        'description': '',
+        'timePartitioning': {
+            'type': 'DAY',
+        },
+        'level': 5,
+        'type': 'table_from_view',
+    },
+    {
+        'name': 'profiles_any_last_N_days',
+        'dataset': 'profiles',
+        'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'adoption_latest',
+        'dataset': 'adoption',
+        'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'adoption_30day_latest',
+        'dataset': 'adoption',
+        'description': 'Latest 30 day users by product, based on aggregation at the user level',
+        'type': 'view',
+    },
+    {
+        'name': 'adoption_latest_extended',
+        'dataset': 'adoption',
+        'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'collab_profiles_latest',
+        'dataset': 'profiles',
+        'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'collab_profiles_pie_chart',
+        'dataset': 'profiles',
+        'description': '',
+        'type': 'view',
+    },
+    {
+        'name': 'collab_profiles_pie_chart_extended',
+        'dataset': 'profiles',
+        'description': '',
+        'type': 'view',
     },
     {
         'name': 'gplus_adoption_daily_latest',
