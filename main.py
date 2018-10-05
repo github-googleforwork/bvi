@@ -72,33 +72,33 @@ urlfetch.set_default_fetch_deadline(60)
 # Returns: Reports API Object to query
 
 
-def refresh_credentials(credentials):
+def refresh_credentials(credentials, num_retries=5, timeout=5):
     retried = 0
-    while retried < 5:
+    while retried < num_retries:
         try:
             retried += 1
             http_auth = credentials.authorize(Http(timeout=30))
             break
         except Exception as err:
-            if retried == 5:
+            if retried == num_retries:
                 raise err
-            logging.info("Retrying token refresh!")
-            time.sleep(5)
+            logging.info("Retrying {} of {} token refresh!".format(str(retried), str(num_retries)))
+            time.sleep(timeout)
     return http_auth
 
 
-def execute_request_with_retries(request):
+def execute_request_with_retries(request, num_retries=5, timeout=5):
     retried = 0
-    while retried < 5:
+    while retried < num_retries:
         try:
             retried += 1
             result = request.execute()
             break
         except Exception as err:
-            if retried == 5:
+            if retried == num_retries:
                 raise err
-            logging.info("Retrying request!")
-            time.sleep(5)
+            logging.info("Retrying {} of {} request!".format(str(retried), str(num_retries)))
+            time.sleep(timeout)
     return result
 
 
