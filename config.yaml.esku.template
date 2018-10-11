@@ -8,6 +8,7 @@ queues:
   user: userq
   volume_report: volumeReportQ
   check_failure: checkFailureQ
+  exec_manager: execManagerQ
 
 credentials:
   general: credential/NAME_OF_CREDENTIALS_FILE.json
