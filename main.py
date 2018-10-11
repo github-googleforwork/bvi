@@ -480,6 +480,7 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
 # Returns: JSON list of users, for a give date, with the defined fields
 
 def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
+    tokens = []
     dDate = date.today().strftime("%Y-%m-%d")
     try:
         reports = createReportObject(cfg['scopes']['admin_directory'], 'admin', 'directory_v1', SAJson, SADelegated)
