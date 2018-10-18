@@ -5,6 +5,7 @@ task_management:
   page_size: MAX_NUMBER_ROWS_PER_PAGE_Recommended_200
 
 queues:
+  slow: metricsqs
   user: userq
   volume_report: volumeReportQ
   check_failure: checkFailureQ
