@@ -26,14 +26,14 @@ if [ -f config.yaml ]; then
 	. parse_yaml.sh
 	eval "$(parse_yaml config.yaml 'bvicfg_')"
 fi
-echo "Hello, "$USER".  We will setup some information before deploying."
+echo "Hello, "${USER}".  We will setup some information before deploying."
 
 # DOMAIN(S)
 if [ ! -z "${bvicfg_domains}" ]; then
 	echo "Current domain(s): ${bvicfg_domains}"
 	echo -n "Enter your GSuite Domain(s) to generate report data separated by semicolon (;) and press [ENTER] (if you provide nothing, no update is made): "
 	read domains
-	domain=${domain:=${bvicfg_domains}}
+	domains=${domain:=${bvicfg_domains}}
 else
 	echo -n "Enter your GSuite Domain(s) to generate report data separated by semicolon (;) and press [ENTER]: "
 	read domains
