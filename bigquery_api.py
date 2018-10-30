@@ -277,7 +277,7 @@ def create_view(
                     try:
                         bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
                                              tableId=destination_table).execute(num_retries=num_retries)
-                    except Exception as err:
+                    except Exception:
                         logging.info('Not needed to delete view, it does not exist: %s', destination_table)
 
                 return bigquery.tables().insert(
@@ -299,10 +299,8 @@ def do_create_table(self, bigquery, table_def):
     try:
         if not exists_table_or_view(
                 bigquery,
-                cfg['ids']['project_id'],
                 destination_dataset=table_def['dataset'],
-                destination_table=table_def['name'],
-                num_retries=5):
+                destination_table=table_def['name']):
             try:
                 create_empty_table(
                     bigquery,
@@ -370,10 +368,8 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
     try:
         if overwrite or not exists_table_or_view(
                 bigquery,
-                cfg['ids']['project_id'],
                 destination_dataset=view_dataset,
-                destination_table=view_name,
-                num_retries=5):
+                destination_table=view_name):
             if table_from_view:
                 query_job = async_query(
                     bigquery,
@@ -397,7 +393,7 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                 poll_job(bigquery, query_job, self)
                 self.response.write("<hr/>")
 
-            elif table_from_view==False:
+            elif not table_from_view:
                 try:
                     create_view(
                         bigquery,
@@ -454,10 +450,7 @@ def exists_dataset(
         return False
 
 
-def exists_table_or_view(
-    bigquery, project_id,
-    destination_dataset, destination_table,
-    num_retries=5):
+def exists_table_or_view(bigquery, destination_dataset, destination_table):
     try:
         bigquery.tables().get(projectId=cfg['ids']['project_id'],
             datasetId=destination_dataset, tableId=destination_table).execute()
@@ -580,20 +573,33 @@ def recreate_views(self, bigquery, folder, tables_list, op):
         generate_html_list(self=self, items_list=views_list, op=op, resource_type='views', items_per_row=5)
 
 
+def filter_tables_do_not_exist(bigquery, part_tables):
+    filtered_part_tables = list({})
+    for index, table_def in enumerate(part_tables):
+        if not exists_table_or_view(
+                bigquery,
+                destination_dataset=table_def['dataset'],
+                destination_table=table_def['name']):
+            filtered_part_tables.append(table_def)
+
+    return filtered_part_tables
+
+
 def create_missing_tables(self, bigquery, folder, tables_list, op):
     merged_tables = list(tables_list)
     merged_tables.extend(bigquery_logs_setup['tables'])
     merged_tables.extend(bigquery_custom_schemas_setup['tables'])
 
     part_tables = [x for x in merged_tables if (x['type'] == 'table_from_view' or x['type'] == 'table')]
+    part_tables_only_missing = filter_tables_do_not_exist(bigquery, part_tables)
 
     start = self.request.get('start')
     end = self.request.get('end')
 
     if len(start) > 0 and len(end) > 0 and type(int(start)) is int and type(int(end)) is int:
         logging.info("Creating missing tables/views between {start} and {end}".format(start=start, end=end))
-        digits = len(str(len(part_tables)))
-        for index, table_def in enumerate(part_tables):
+        digits = len(str(len(part_tables_only_missing)))
+        for index, table_def in enumerate(part_tables_only_missing):
             if int(start) <= index <= int(end):
                 logging.info("Recreating table/view {index:0{digits}}: {name}".format(digits=digits, index=index,
                                                                                       name=table_def['name']))
@@ -610,7 +616,8 @@ def create_missing_tables(self, bigquery, folder, tables_list, op):
                     do_create_view(self, bigquery, folder, table_def['dataset'], table_def['name'],
                                    True, overwrite=True, truncate=False)
     else:
-        generate_html_list(self=self, items_list=part_tables, op=op, resource_type='tables/views', items_per_row=5)
+        generate_html_list(self=self, items_list=part_tables_only_missing, op=op, resource_type='tables/views',
+                           items_per_row=5)
 
 
 def generate_html_list(self, items_list, op, items_per_row, resource_type):
