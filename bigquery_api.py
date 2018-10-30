@@ -574,13 +574,13 @@ def recreate_views(self, bigquery, folder, tables_list, op):
 
 
 def filter_tables_do_not_exist(bigquery, part_tables):
-    filtered_part_tables = {}
+    filtered_part_tables = list({})
     for index, table_def in enumerate(part_tables):
-        if exists_table_or_view(
+        if not exists_table_or_view(
                 bigquery,
                 destination_dataset=table_def['dataset'],
                 destination_table=table_def['name']):
-            filtered_part_tables.update(table_def)
+            filtered_part_tables.append(table_def)
 
     return filtered_part_tables
 
