@@ -52,7 +52,7 @@ if [[ $# -eq 1 ]]; then
     do
         view="${view/$BIGQUERYFOLDER\/$dataset\//}"
         view="${view/\.sql/}"
-        if [ -f $BIGQUERYFOLDER/${dataset}/${view}.sql ]; then
+        if [ -f ${BIGQUERYFOLDER}/${dataset}/${view}.sql ]; then
             modified=$(stat $BIGQUERYFOLDER/${dataset}/${view}.sql|sed -n -e 's/^[[:space:]]//; s/Modify://p')
             mdate=$(date --date="${modified}" +"%s")
             # day=$(date --date @${mdate} +"%d")

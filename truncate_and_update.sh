@@ -35,7 +35,7 @@ d1=$(date -d "$3" +%s)
 if [ $# -gt 3 ]; then
     d2=$(date -d "$4" +%s)
 else
-    d2=$d1
+    d2=${d1}
 fi
 
 diff=$(( (d1 - d2) / 86400 * -1))

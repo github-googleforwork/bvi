@@ -277,7 +277,7 @@ def create_view(
                     try:
                         bigquery.tables().delete(projectId=project_id, datasetId=destination_dataset,
                                              tableId=destination_table).execute(num_retries=num_retries)
-                    except Exception as err:
+                    except Exception:
                         logging.info('Not needed to delete view, it does not exist: %s', destination_table)
 
                 return bigquery.tables().insert(
@@ -397,7 +397,7 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                 poll_job(bigquery, query_job, self)
                 self.response.write("<hr/>")
 
-            elif table_from_view==False:
+            elif not table_from_view:
                 try:
                     create_view(
                         bigquery,

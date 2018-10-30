@@ -54,7 +54,7 @@ maxResultsPage = cfg['task_management']['page_size']
 if cfg['plan'] == 'Business':
     maxResultsPage_UserUsage = cfg['task_management']['page_size_user_usage']
 
-#Added to avoid DeadlineExceededError: Deadline exceeded while waiting for HTTP response from URL:
+# Added to avoid DeadlineExceededError: Deadline exceeded while waiting for HTTP response from URL:
 urlfetch.set_default_fetch_deadline(60)
 
 # Create Report Object
@@ -204,7 +204,6 @@ def returnTotalUsersList(dDomain, SAJson, SADelegated):
 # Generates a Customer Usage Report for a given day -5 (Due to data availability)
 #
 # Returns: JSON with the Customer Usage Metrics
-
 def returnCustomerUsageReport(dDay, SAJson, SADelegated):
     usage = []
     page_token = None
@@ -230,7 +229,6 @@ def returnCustomerUsageReport(dDay, SAJson, SADelegated):
                  'meet:num_meetings_with_11_to_15_calls,meet:num_meetings_with_16_to_25_calls,meet:num_meetings_with_26_to_50_calls,meet:num_meetings_with_2_calls,meet:num_meetings_with_3_to_5_calls,meet:num_meetings_with_6_to_10_calls,meet:num_meetings_with_external_users,meet:num_meetings_with_pstn_in_users,meet:total_call_minutes,meet:total_call_minutes_android,meet:total_call_minutes_by_external_users,meet:total_call_minutes_by_internal_users,meet:total_call_minutes_by_pstn_in_users,' \
                  'meet:total_call_minutes_chromebase,meet:total_call_minutes_chromebox,meet:total_call_minutes_ios,meet:total_call_minutes_jamboard,meet:total_call_minutes_unknown_client,meet:total_call_minutes_web,meet:total_meeting_minutes,' \
                  'gplus:num_1day_active_users,gplus:num_7day_active_users,gplus:num_30day_active_users,gplus:num_shares,gplus:num_stream_items_read,gplus:num_plusones,gplus:num_replies,gplus:num_reshares,gplus:num_communities,gplus:num_communities_public,gplus:num_communities_private,gplus:num_communities_organization_wide,gplus:num_communities_organization_private'
-
 
     while True:
         try:
@@ -268,7 +266,6 @@ def returnCustomerUsageReport(dDay, SAJson, SADelegated):
 # Generates a User Usage Report for a given day -5 (Due to data availability)
 #
 # Returns: JSON with the User Usage Metrics
-
 def returnUserUsageReport(uUser, dDay, SAJson, SADelegated):
     user_usage = []
     page_token = None
@@ -309,7 +306,6 @@ def returnUserUsageReport(uUser, dDay, SAJson, SADelegated):
 # Generates an Activities Report for a given day -5 (Due to data availability)
 #
 # Returns: JSON with the User Usage Metrics
-
 def returnAuditLogReport(uUser, appName, dDay, SAJson, SADelegated):
     startTime = dDay + 'T00:00:00.000Z'
     endTime = dDay + 'T23:59:59.999Z'
@@ -347,7 +343,6 @@ def returnAuditLogReport(uUser, appName, dDay, SAJson, SADelegated):
 # Gets a JSON dataset  and splits in rows to write in BigQuery
 #
 # Returns: BigQuery response
-
 def writeDatainBigQuery(dataRows, dataTable):
     bQService = createBigQueryService(cfg['scopes']['big_query'], 'bigquery', 'v2')
     logging.info("Processing {len} rows, destinated to {table}".format(len=len(dataRows), table=dataTable))
@@ -384,7 +379,6 @@ def delete_table_big_query(table_name):
 # Streams one row of JSON data into BigQuery
 #
 # Returns: Nothing
-
 def stream_row_to_bigquery(bigquery, table_name, rows):
     logging.info("Streaming {len} rows, destinated to {table}".format(len=len(rows), table=table_name))
     rows_list = []
@@ -437,7 +431,6 @@ def stream_row_to_bigquery(bigquery, table_name, rows):
 # Generates a list of users in a given GAps domain
 #
 # Returns: JSON list of users, for a give date, with the defined fields
-
 def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
     users = []
     page_token = None
@@ -469,6 +462,7 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
     logging.info("We have {} user rows in the end".format(len(users)))
     yield users
 
+
 # Returns User List Token
 # Parameters:
 # dDomain = Google Apps Domain
@@ -478,9 +472,7 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
 # Generates a list of users in a given GAps domain
 #
 # Returns: JSON list of users, for a give date, with the defined fields
-
 def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
-    tokens = []
     dDate = date.today().strftime("%Y-%m-%d")
     try:
         reports = createReportObject(cfg['scopes']['admin_directory'], 'admin', 'directory_v1', SAJson, SADelegated)
@@ -517,6 +509,7 @@ def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
             break
     yield tokens
 
+
 # Returns User List Page Token
 # Parameters:
 # dDomain = Google Apps Domain
@@ -526,7 +519,6 @@ def returnUsersListToken(dDomain, SAJson, SADelegated, page_token):
 # Generates a list of users in a given GSuite domain
 #
 # Returns: JSON list of users, for a give date, with the defined fields
-
 def returnUserListPageToken(token, dDay, dDomain, SAJson, SADelegated):
     dDate = dDay
     page_token = token
@@ -569,7 +561,6 @@ def returnUserListPageToken(token, dDay, dDomain, SAJson, SADelegated):
 # Generates a User Usage Report for a given day -3 (Due to data availability)
 #
 # Returns: JSON with list of page tokens
-
 def returnUserUsageToken(dDay, SAJson, SADelegated, page_token):
     tokens = []
     try:
@@ -610,6 +601,7 @@ def returnUserUsageToken(dDay, SAJson, SADelegated, page_token):
     logging.info(tokens)
     yield tokens
 
+
 # Returns User Usage Report Page Token
 # Parameters:
 # dDomain = Google Apps Domain
@@ -619,7 +611,6 @@ def returnUserUsageToken(dDay, SAJson, SADelegated, page_token):
 # Generates a User Usage Report for a given day -3 (Due to data availability)
 #
 # Returns: JSON with the User Usage Metrics
-
 def returnUserUsagePageToken(token, dDay, SAJson, SADelegated):
     dDate = dDay
     page_token = token
@@ -647,6 +638,7 @@ def returnUserUsagePageToken(token, dDay, SAJson, SADelegated):
     logging.info("We have {} user_usage rows in the end".format(len(user_usage)))
     yield user_usage
 
+
 # Returns Activities Token
 # Parameters:
 # dDay = A given date
@@ -657,7 +649,6 @@ def returnUserUsagePageToken(token, dDay, SAJson, SADelegated):
 # Generates a Activities Report for a given day -3 (Due to data availability) and App
 #
 # Returns: JSON with list of page tokens
-
 def returnActivitiesToken(dDay, appName, SAJson, SADelegated, page_token):
     tokens = []
     startTime = dDay + 'T00:00:00.000Z'
@@ -696,6 +687,7 @@ def returnActivitiesToken(dDay, appName, SAJson, SADelegated, page_token):
             break
     yield tokens
 
+
 # Returns Activities Report Page Token
 # Parameters:
 # token
@@ -707,7 +699,6 @@ def returnActivitiesToken(dDay, appName, SAJson, SADelegated, page_token):
 # Generates a Activities Report for a given day -3 (Due to data availability) and App
 #
 # Returns: JSON with the User Usage Metrics
-
 def returnActivitiesPageToken(token, appName, dDay, SAJson, SADelegated):
     startTime = dDay + 'T00:00:00.000Z'
     endTime = dDay + 'T23:59:59.999Z'
@@ -745,6 +736,7 @@ def get_dateref_or_from_cron(dateref):
         dateref = report_date.strftime("%Y-%m-%d")
     return dateref
 
+
 class PrintMain(webapp2.RequestHandler):
     def get(self):
         logging.info('Main')
@@ -753,6 +745,7 @@ class PrintMain(webapp2.RequestHandler):
         self.response.write("<p>Task Page Size: {}</p>".format(cfg['task_management']['page_size']))
         if cfg['plan'] == 'Business':
             self.response.write("<p>Task Page Size User_Usage: {}</p>".format(cfg['task_management']['page_size_user_usage']))
+
 
 application = webapp2.WSGIApplication([('/', PrintMain)],
                                       debug=True)

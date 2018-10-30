@@ -17,7 +17,8 @@
 # Author: Thomas Cliett
 # Author: Ismael Yuste
 
-# This file implements PrintOneUserActivities, getting the GSuite Reports API Activities report for a given user, application and date
+# This file implements PrintOneUserActivities, getting the GSuite Reports API Activities report for a given user,
+# application and date
 # Parameters:
 # token
 # app: calendar|drive|groups|login|mobile|token
@@ -40,12 +41,12 @@ class PrintOnePageUserActivities(webapp2.RequestHandler):
         token = self.request.get('token')
         app = self.request.get('app')
         dDate = self.request.get('date')
-        decoratorDate = ("").join(dDate.split("-"))
+        decoratorDate = "".join(dDate.split("-"))
         for report_items in returnActivitiesPageToken(token, app, dDate, cfg['credentials']['general'],
                                                       cfg['super_admin']['delegated']):
             try:
-                bq_answer = writeDatainBigQuery(report_items,
-                                                'audit_log${decoratorDate}'.format(decoratorDate=decoratorDate))
+                writeDatainBigQuery(report_items,
+                                    'audit_log${decoratorDate}'.format(decoratorDate=decoratorDate))
             except Exception as err:
                 bvi_log(date=dDate, resource='activities', message_id='bigquery_error', message=err,
                         regenerate=True)

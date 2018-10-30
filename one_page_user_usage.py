@@ -38,18 +38,16 @@ class PrintOnePageUserUsage(webapp2.RequestHandler):
         # User Usage for a date One page at a time
         token = self.request.get('token')
         dDate = self.request.get('date')
-        decoratorDate = ("").join(dDate.split("-"))
+        decoratorDate = "".join(dDate.split("-"))
         for report_items in returnUserUsagePageToken(token, dDate, cfg['credentials']['general'],
                                                      cfg['super_admin']['delegated']):
             try:
-                bq_answer = writeDatainBigQuery(report_items,
-                                                'user_usage${decoratorDate}'.format(decoratorDate=decoratorDate))
+                writeDatainBigQuery(report_items,
+                                    'user_usage${decoratorDate}'.format(decoratorDate=decoratorDate))
             except Exception as err:
                 bvi_log(date=dDate, resource='user_usage', message_id='bigquery_error', message=err,
                         regenerate=True)
                 raise err
 
 
-
-application = webapp2.WSGIApplication([('/one_page_user_usage', PrintOnePageUserUsage)],
-                                      debug=True)
+application = webapp2.WSGIApplication([('/one_page_user_usage', PrintOnePageUserUsage)], debug=True)

@@ -34,4 +34,4 @@ YYYYMMDD=${3}
 
 printf "Truncating $dataset.$table for partition $YYYYMMDD in proyect ${DEVSHELL_PROJECT_ID}\n"
 
-bq query --replace --noflatten_results --allow_large_results --noflatten_results --allow_large_results --destination_table=$dataset.$table\$$YYYYMMDD "SELECT * FROM [${DEVSHELL_PROJECT_ID}:$dataset.$table] WHERE _PARTITIONTIME=DATE_ADD(CURRENT_DATE(),1,'DAY')"
+bq query --replace --noflatten_results --allow_large_results --noflatten_results --allow_large_results --destination_table=${dataset}.$table\$$YYYYMMDD "SELECT * FROM [${DEVSHELL_PROJECT_ID}:$dataset.$table] WHERE _PARTITIONTIME=DATE_ADD(CURRENT_DATE(),1,'DAY')"

@@ -45,7 +45,7 @@ class PrintUsersExtended(webapp2.RequestHandler):
                 users += len(user_list)
                 logging.info("User List === {}".format(user_list))
                 logging.info('User list for {} - {} / {} so far until now'.format(dDate, domain, users))
-                bq_answer = writeDatainBigQuery(user_list, 'users_list_date_extended${decoratorDate}'.format(
+                writeDatainBigQuery(user_list, 'users_list_date_extended${decoratorDate}'.format(
                     decoratorDate=decoratorDate))
             logging.info('User list for {} - {} / finally ... {} '.format(dDate, domain, users))
             self.response.write("User Extended list for {dDate} - {domain} / ... {length}".format(
