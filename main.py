@@ -77,7 +77,7 @@ def refresh_credentials(credentials, num_retries=5, timeout=5):
     while retried < num_retries:
         try:
             retried += 1
-            http_auth = credentials.authorize(Http(timeout=30))
+            http_auth = credentials.authorize(Http(timeout=120))
             break
         except Exception as err:
             if retried == num_retries:

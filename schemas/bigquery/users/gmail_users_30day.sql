@@ -14,8 +14,7 @@ FROM (
   WHERE
     parameters.name IN ("gmail:last_interaction_time")
     AND _PARTITIONTIME = TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
-    AND parameters.datetimeValue >= DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER), -30, "DAY")
-    AND parameters.datetimeValue <= DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER), -4, "DAY") ) gmail_usage
+    AND parameters.datetimeValue >= DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER), -30, "DAY") ) gmail_usage
 WHERE
   domain IN ( YOUR_DOMAINS )
 GROUP BY
