@@ -14,7 +14,6 @@ FROM (
     _PARTITIONTIME = TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
     AND record_type = 'user'
     AND SEC_TO_TIMESTAMP(gmail.last_interaction_time) >= TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
-    AND SEC_TO_TIMESTAMP(gmail.last_interaction_time) < DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER),1,"DAY")
     AND gmail.last_interaction_time > 0
     ) gmail_usage
 WHERE

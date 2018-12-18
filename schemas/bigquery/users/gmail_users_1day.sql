@@ -15,7 +15,6 @@ FROM (
     parameters.name IN ("gmail:last_interaction_time")
     AND _PARTITIONTIME = TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
     AND parameters.datetimeValue >= TIMESTAMP(YOUR_TIMESTAMP_PARAMETER)
-    AND parameters.datetimeValue < DATE_ADD(TIMESTAMP(YOUR_TIMESTAMP_PARAMETER),1,"DAY")
     ) gmail_usage
 WHERE
   domain IN ( YOUR_DOMAINS )
