@@ -731,7 +731,7 @@ def custom_fields_empty(bigquery):
         logging.info("Custom Fields table is set with external GOOGLE_SHEETS config.")
         is_empty = False
 
-    if ('numRows' in info) or int(info['numRows']) > 0:
+    if ('numRows' in info) and int(info['numRows']) > 0:
         logging.info("Custom Fields table is not empty because there a rows inserted in it.")
         is_empty = False
 
