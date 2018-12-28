@@ -160,10 +160,11 @@ def returnUsersListGenerator(dDomain, SAJson, SADelegated):
         try:
             request = reports.users().list(domain=dDomain, pageToken=page_token, fields=fields)
             results = execute_request_with_retries(request)
-            users = results['users']
-            logging.info("Page Token {}".format(page_token))
-            for user_item in users:
-                user_item[u'date'] = dDate
+            if 'users' in results:
+                users = results['users']
+                logging.info("Page Token {}".format(page_token))
+                for user_item in users:
+                    user_item[u'date'] = dDate
             if 'nextPageToken' in results:
                 page_token = results['nextPageToken']
                 logging.info("We have {} user rows, and more to come".format(len(users)))
@@ -443,9 +444,10 @@ def returnUsersListGeneratorExtended(dDomain, SAJson, SADelegated):
                                            projection='full',
                                            fields=fields)
             results = execute_request_with_retries(request)
-            users = results['users']
-            for user_item in users:
-                user_item[u'date'] = dDate
+            if 'users' in results:
+                users = results['users']
+                for user_item in users:
+                    user_item[u'date'] = dDate
             if 'nextPageToken' in results:
                 page_token = results['nextPageToken']
                 logging.info("We have {} user rows, and more to come".format(len(users)))
@@ -538,14 +540,16 @@ def returnUserListPageToken(token, dDay, dDomain, SAJson, SADelegated):
             request = reports.users().list(domain=dDomain, pageToken=page_token, maxResults=maxResultsPage,
                                            fields=fields)
         results = execute_request_with_retries(request)
-        users = results['users']
-        for user_item in users:
-            user_item[u'date'] = dDate
+        if 'users' in results:
+            users = results['users']
+            for user_item in users:
+                user_item[u'date'] = dDate
     except DeadlineExceededError as err:
         logging.error(err)
         logging.error("Retrying!")
     except Exception as err:
         logging.error(err)
+        logging.error(dDomain)
         logging.error("Error Found, ending returnUserListPageToken!")
         bvi_log(date=dDate, resource='users_list', message_id='users_list_api', message=err, regenerate=True)
     logging.info("We have {} user rows in the end".format(len(users)))
