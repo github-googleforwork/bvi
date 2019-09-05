@@ -1,10 +1,11 @@
 -- user_usage_drive_stats_whole_history
+-- Review: 04/09/2019
 SELECT
   user_usage.date AS date,
   user_usage.email AS email,
   IFNULL(users.ou, 'NA') AS ou,
-  SUM(drive.num_items_edited + drive.num_owned_items_edited) AS num_docs_edited,
-  SUM(drive.num_items_viewed + drive.num_owned_items_viewed) AS num_docs_viewed
+  drive.num_items_edited + drive.num_owned_items_edited AS num_docs_edited,
+  drive.num_items_viewed + drive.num_owned_items_viewed AS num_docs_viewed
 FROM (
   SELECT
     date,
@@ -34,4 +35,3 @@ ON
   users.email = user_usage.email
 WHERE
   domain IN ( YOUR_DOMAINS )
-GROUP BY 1,2,3

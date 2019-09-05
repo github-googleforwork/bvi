@@ -1,5 +1,5 @@
 -- required name of view: user_usage_editors_daily
--- Review: 15/02/2017
+-- Review: 04/09/2019
 SELECT
   user_usage.date AS date,
   user_usage.email AS email,
@@ -15,8 +15,8 @@ FROM (
     [YOUR_PROJECT_ID:raw_data.user_usage]
   WHERE
     _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
-    AND parameters.name IN ('drive:num_owned_items_created', 'drive:num_owned_items_edited', 'drive:num_owned_items_trashed')
-    AND parameters.intValue > 0 )user_usage
+    AND parameters.name IN ('drive:num_items_created', 'drive:num_items_edited', 'drive:num_items_trashed')
+    AND parameters.intValue > 0 ) user_usage
 LEFT JOIN (
   SELECT
     ou,

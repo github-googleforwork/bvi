@@ -73,11 +73,6 @@ def async_query(
         batch=False, num_retries=5, use_legacy_sql=True, truncate=True):
     # Generate a unique job ID so retries
     # don't accidentally duplicate query
-    if truncate:
-        write_disposition = 'WRITE_TRUNCATE'
-    else:
-        write_disposition = 'WRITE_APPEND'
-
     job_data = {
         'jobReference': {
             'projectId': project_id,
@@ -96,9 +91,9 @@ def async_query(
                       "datasetId": destination_dataset,
                       "tableId": destination_table
                 },
-                "schemaUpdateOptions": "ALLOW_FIELD_ADDITION",
+                "schemaUpdateOptions": '' if truncate else 'ALLOW_FIELD_ADDITION',
                 "createDisposition": "CREATE_IF_NEEDED",
-                "writeDisposition": "{}".format(write_disposition),
+                "writeDisposition": 'WRITE_TRUNCATE' if truncate else 'WRITE_APPEND',
             }
         }
     }
@@ -384,6 +379,7 @@ def do_create_view(self, bigquery, folder, view_dataset, view_name, table_from_v
                     operation = "updated"
                 else:
                     operation = "created"
+
                 salida = "<b>{destination_dataset}.{destination_table}</b> ... {operation} ... ".format(
                     destination_dataset=view_dataset,
                     destination_table=view_name,

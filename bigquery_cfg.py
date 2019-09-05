@@ -55,6 +55,12 @@ setup['datasets'] = [
 
 setup['tables'] = [
     {
+        'name': 'visibility_level',
+        'dataset': 'adoption',
+        'description': 'File visibility levels from the most private to the most public',
+        'type': 'view',
+    },
+    {
         'name': 'audit_log',
         'dataset': 'raw_data',
         'description': 'Data from Activities API endpoint',
@@ -511,12 +517,6 @@ setup['tables'] = [
         'name': 'missing_data_customer',
         'dataset': 'raw_data',
         'description': 'Missing customer usage data',
-        'type': 'view',
-    },
-    {
-        'name': 'visibility_level',
-        'dataset': 'adoption',
-        'description': 'File visibility levels from the most private to the most public',
         'type': 'view',
     },
     {

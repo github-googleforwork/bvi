@@ -1,12 +1,13 @@
 -- user_usage_gplus_daily
+-- Review: 04/09/2019
 SELECT
   user_usage.date AS date,
   user_usage.email AS email,
   IFNULL(users.ou, 'NA') AS ou,
-  user_usage.num_shares AS num_shares,
-  user_usage.num_plusones as num_plusones,
-  user_usage.num_replies as num_replies,
-  user_usage.num_reshares as num_reshares
+  SUM(user_usage.num_shares) AS num_shares,
+  SUM(user_usage.num_plusones) as num_plusones,
+  SUM(user_usage.num_replies) as num_replies,
+  SUM(user_usage.num_reshares) as num_reshares
 FROM (
   SELECT
     date,
@@ -21,7 +22,7 @@ FROM (
   WHERE
     _PARTITIONTIME = YOUR_TIMESTAMP_PARAMETER
     AND parameters.name IN ('gplus:num_shares', 'gplus:num_plusones', 'gplus:num_replies', 'gplus:num_reshares')
-    AND parameters.intValue > 0 )user_usage
+    AND parameters.intValue > 0 ) user_usage
 LEFT JOIN (
   SELECT
     ou,
@@ -35,4 +36,4 @@ ON
   users.email = user_usage.email
 WHERE
   domain IN ( YOUR_DOMAINS )
-GROUP BY 1,2,3,4,5,6,7
+GROUP BY 1,2,3

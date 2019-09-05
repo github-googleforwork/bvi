@@ -52,6 +52,12 @@ setup['datasets'] = [
 
 setup['tables'] = [
     {
+        'name': 'visibility_level',
+        'dataset': 'adoption',
+        'description': 'File visibility levels from the most private to the most public',
+        'type': 'view',
+    },
+    {
         'name': 'users_list_date',
         'dataset': 'raw_data',
         'description': 'Historical Registry of the Organization Users',
@@ -738,12 +744,6 @@ setup['tables'] = [
         },
         'level': 7,
         'type': 'table_from_view',
-    },
-    {
-        'name': 'visibility_level',
-        'dataset': 'adoption',
-        'description': 'File visibility levels from the most private to the most public',
-        'type': 'view',
     },
     {
         'name': 'latest_date_customer_usage',
