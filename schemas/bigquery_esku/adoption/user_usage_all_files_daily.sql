@@ -5,10 +5,10 @@ SELECT
   user_usage.email AS email,
   IFNULL(users.ou, 'NA') AS ou,
   user_usage.num_docs_created + user_usage.num_docs_edited + user_usage.num_docs_trashed + user_usage.num_docs_viewed AS num_docs,
-  user_usage.num_docs_created as num_num_docs_created,
-  user_usage.num_docs_edited as num_num_docs_edited,
-  user_usage.num_docs_trashed as num_num_docs_trashed,
-  user_usage.num_docs_viewed as num_num_docs_viewed
+  user_usage.num_docs_created as num_docs_created,
+  user_usage.num_docs_edited as num_docs_edited,
+  user_usage.num_docs_trashed as num_docs_trashed,
+  user_usage.num_docs_viewed as num_docs_viewed
 FROM (
   SELECT
     date,
