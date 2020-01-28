@@ -1,4 +1,4 @@
-version: version-4-mv05
+version: version-4-mv06
 
 task_management:
   max_pages: MAX_NUMBER_PAGES_Recommended_200
